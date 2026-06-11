@@ -1,0 +1,9 @@
+kzalloc
+kvzalloc
+kvcalloc
+kcalloc
+kmalloc_array
+kmalloc
+kmalloc_large
+kmem_cache_alloc
+kmem_cache_zalloc

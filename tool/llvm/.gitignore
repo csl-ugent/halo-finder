@@ -1,0 +1,7 @@
+llvm-project/clang
+llvm-project/llvm
+llvm-project/build
+llvm-project/cmake
+llvm-project/prefix
+llvm-project/*.xz
+

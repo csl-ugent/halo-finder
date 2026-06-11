@@ -1,0 +1,15 @@
+__raw_spin_unlock
+__raw_spin_unlock_irq
+__raw_spin_unlock_irqrestore
+__raw_spin_unlock_bh
+do_raw_spin_unlock
+mutex_unlock
+up_read
+up_write
+up
+__raw_read_unlock_irq
+__raw_read_unlock_bh
+__raw_read_unlock_irqrestore
+__raw_write_unlock_irq
+__raw_write_unlock_bh
+__raw_write_unlock_irqrestore

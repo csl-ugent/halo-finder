@@ -1,0 +1,438 @@
+Location,Field,Category,Notes
+"/linux/arch/x86/pci/irq.c, 1270:  in mp_should_keep_irq",struct.device[1],fp:incorrect-rule,"Lock ongerelateerd aan power management, power management heeft zelf locks"
+"/linux/./include/linux/rculist_bl.h, 79:  in __d_rehash",struct.dentry[2][0],unknown:sudden-rcu,
+"/linux/./include/linux/list.h, 282:  in umount_check",struct.dentry[14][0],fp:cleanup,
+"/linux/fs/pipe.c, 679:  in pipe_poll",struct.pipe_inode_info[9],fp:safe,
+"/linux/fs/pipe.c, 679:  in pipe_poll",struct.pipe_inode_info[12],fp:safe,
+"/linux/fs/splice.c, 482:  in splice_from_pipe_next",struct.pipe_inode_info[9],fp:tool-bug,De pipe is weldegelijk gelockt met de verwachte lock op het pad
+"/linux/./include/linux/list.h, 35:  in inode_init_once",struct.inode[35][0],fp:init,
+"/linux/./include/linux/list.h, 35:  in inode_init_once",struct.inode[12][0],fp:init,
+"/linux/./include/linux/list.h, 36:  in __init_waitqueue_head",struct.wait_queue_head[1],fp:init,
+"/linux/lib/list_debug.c, 54:  in __list_del_entry_valid",struct.file[16][888888][13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/lib/list_debug.c, 54:  in __list_del_entry_valid",struct.dentry[13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/./include/linux/list.h, 112:  in dcache_dir_lseek",struct.file[16][888888][13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/./include/linux/list.h, 112:  in dcache_dir_lseek",struct.dentry[13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/fs/libfs.c, 110:  in scan_positives",struct.dentry[14][0],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/lib/list_debug.c, 54:  in __list_del_entry_valid",struct.file[16][888888][13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/./include/linux/list.h, 112:  in scan_positives",struct.file[16][888888][13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/./include/linux/list_bl.h, 54:  in scan_positives",struct.list_head[-8],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/./include/linux/list.h, 112:  in scan_positives",struct.file[16][888888][13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/./include/linux/list.h, 112:  in dcache_readdir",struct.file[16][888888][13][0][888888][1],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/fs/io_uring.c, 4905:  in io_async_task_func",struct.io_kiocb[16][888888][4],fp:read_once,READ_ONCE
+"/linux/fs/io_uring.c, 4907:  in io_async_task_func",struct.io_kiocb[16][888888][4],fp:read_once,READ_ONCE
+"/linux/./arch/x86/include/asm/bitops.h, 207:  in io_wake_function",struct.io_ring_ctx[8],fp:cant-change,ctx→nr_user_files ingesteld tijdens register
+"/linux/fs/io_uring.c, 1406:  in io_uring_poll",struct.io_ring_ctx[1][888888][2],fp:barriers,
+"/linux/./arch/x86/include/asm/bitops.h, 207:  in io_uring_poll",struct.io_ring_ctx[8],fp:comment,
+"/linux/fs/notify/inotify/inotify_fsnotify.c, 42:  in inotify_merge",struct.fsnotify_group[1][888888][2],fp:tool-bug,De verwachte lock (notification_lock) is weldegelijk genomen
+"/linux/./arch/x86/include/asm/atomic64_64.h, 22:  in dec_ucount",struct.fsnotify_group[1][888888][0],fp:atomics,
+"/linux/./include/linux/list.h, 282:  in invalidate_inode_buffers",struct.inode[12][0],unknown:uninterpretable,En staat er dubbel in? (dubbele niet in lijst)
+"/linux/./include/linux/list.h, 282:  in invalidate_inode_buffers",struct.inode[12][0],fp:tool-bug,De verwachte lock (private_lock) is weldegelijk genomen
+"/linux/./include/linux/list.h, 35:  in __init_rwsem",struct.rw_semaphore[4][0],fp:is-lock,__init_rwsem
+"/linux/./include/linux/list.h, 36:  in __init_rwsem",struct.rw_semaphore[1],fp:is-lock,__init_rwsem
+"/linux/./include/linux/list.h, 282:  in inode_has_buffers",struct.inode[12][0],fp:tool-bug,"De verwachte lock is weldegelijk genomen, staan unlocks direct na"
+"/linux/kernel/time/alarmtimer.c, 228:  in alarm_expires_remaining",struct.timerfd_ctx[0][1],unknown:procfs,
+"/linux/./include/linux/list.h, 135:  in resv_map_release",struct.resv_map[0][8][888888][1],fp:cleanup,
+"/linux/./include/linux/list.h, 135:  in resv_map_release",struct.resv_map[0][8][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 113:  in resv_map_release",struct.resv_map[0][8][888888][1][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 147:  in resv_map_release",struct.resv_map[0][8][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 148:  in resv_map_release",struct.resv_map[0][8][888888][1],fp:cleanup,
+Access value: {@LOAD@{{AVA0}[{CONST_1}]}},struct.device[1],unknown:procfs,Geen source location??
+"/linux/block/badblocks.c, 435:  in ack_all_badblocks",struct.badblocks[5],fp:recheck,
+"/linux/./include/linux/list.h, 282:  in devm_kfree",struct.device[1][888888][0],fp:tool-bug,De verwachte lock (devres_lock) is weldegelijk genomen
+"/linux/block/blk-wbt.c, 683:  in wbt_queue_depth_changed",struct.rq_qos[4][3],fp:cleanup,
+"/linux/lib/percpu-refcount.c, 245:  in __percpu_ref_switch_mode",struct.request_queue[2][1][888888][3],fp:tool-bug,"De verwachte lock (percpu_ref_switch_lock) is weldegelijk genomen, gedubbeld"
+"/linux/lib/percpu-refcount.c, 278:  in __percpu_ref_switch_mode",struct.request_queue[2][1][888888][3],fp:tool-bug,"De verwachte lock (percpu_ref_switch_lock) is weldegelijk genomen, gedubbeld"
+"/linux/block/blk-core.c, 466:  in blk_queue_enter",struct.request_queue[57],fp:safe,"racy in wait_event, gedubbeld"
+"/linux/drivers/mailbox/mailbox.c, 127:  in txdone_hrtimer",struct.mbox_chan[4],probable,
+"/linux/./include/linux/list.h, 821:  in del_timer",struct.device[6][888888][5][1],fp:incorrect-rule,gedubbeld
+"/linux/./include/linux/list.h, 952:  in del_timer",struct.device[6][888888][5][0],fp:incorrect-rule,gedubbeld
+"/linux/./include/linux/list.h, 835:  in del_timer",struct.device[6][888888][5][0],fp:incorrect-rule,
+"/linux/./include/linux/list.h, 836:  in del_timer",struct.device[6][888888][5][1],fp:incorrect-rule,
+"/linux/./include/linux/list.h, 838:  in del_timer",struct.device[6][888888][5][1][888888],fp:incorrect-rule,
+"/linux/./include/linux/list.h, 840:  in del_timer",struct.device[6][888888][5][0][888888][1],fp:incorrect-rule,
+"/linux/kernel/time/timer.c, 829:  in del_timer",struct.device[6][888888][5][1],fp:incorrect-rule,
+"/linux/kernel/time/timer.c, 830:  in del_timer",struct.device[6][888888][5][0],fp:incorrect-rule,
+"/linux/drivers/phy/phy-core.c, 363:  in phy_set_mode_ext",struct.phy[2],fp:cant-change,->ops field
+"/linux/drivers/phy/phy-core.c, 380:  in phy_set_media",struct.phy[2],fp:cant-change,->ops field
+"/linux/drivers/phy/phy-core.c, 395:  in phy_set_speed",struct.phy[2],fp:cant-change,->ops field
+"/linux/drivers/phy/phy-core.c, 410:  in phy_reset",struct.phy[2],fp:cant-change,->ops field
+"/linux/drivers/phy/phy-core.c, 441:  in phy_calibrate",struct.phy[2],fp:cant-change,->ops field
+"/linux/drivers/phy/phy-core.c, 470:  in phy_configure",struct.phy[2],fp:cant-change,->ops field
+"/linux/drivers/phy/phy-core.c, 505:  in phy_validate",struct.phy[2],fp:cant-change,->ops field
+"/linux/drivers/phy/phy-core.c, 1183:  in phy_release",struct.device[1],fp:cleanup,
+"/linux/drivers/pwm/sysfs.c, 33:  in period_show",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/pwm.h, 108:  in period_show",struct.device[1][888888][0],unknown:sysfs,
+"/linux/./include/linux/pwm.h, 108:  in enable_show",struct.device[1][888888][3],unknown:sysfs,
+"/linux/drivers/pwm/sysfs.c, 53:  in period_store",struct.device[1],fp:cant-change,weer device[1] met lock device[0]…
+"/linux/drivers/pwm/core.c, 544:  in pwm_apply_state",struct.device[1][888888][1],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 545:  in pwm_apply_state",struct.device[1][888888][2],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 546:  in pwm_apply_state",struct.device[1][888888][3],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 568:  in pwm_apply_state",struct.device[1][888888][2],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 577:  in pwm_apply_state",struct.device[1][888888][3],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 579:  in pwm_apply_state",struct.device[1][888888][3],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 587:  in pwm_apply_state",struct.device[1][888888][2],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 591:  in pwm_apply_state",struct.device[1][888888][1],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 598:  in pwm_apply_state",struct.device[1][888888][1],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 602:  in pwm_apply_state",struct.device[1][888888][3],fp:incorrect-rule,
+"/linux/drivers/pwm/core.c, 611:  in pwm_apply_state",struct.device[1][888888][3],fp:incorrect-rule,
+"/linux/drivers/pwm/sysfs.c, 33:  in duty_cycle_show",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/pwm.h, 108:  in duty_cycle_show",struct.device[1][888888][1],unknown:sysfs,
+"/linux/drivers/pwm/sysfs.c, 88:  in duty_cycle_store",struct.device[1],fp:incorrect-rule,"weer device[1] met lock device[0]…, ook deze functie wordt precies nergens gecalled?"
+"/linux/drivers/pwm/sysfs.c, 33:  in enable_show",struct.device[1],fp:cant-change,
+"/linux/drivers/pwm/sysfs.c, 33:  in enable_show",struct.device[1][888888][3],unknown:sysfs,
+"/linux/drivers/pwm/sysfs.c, 123:  in enable_store",struct.device[1],fp:cant-change,
+"/linux/drivers/pwm/sysfs.c, 33:  in polarity_show",struct.device[1],fp:cant-change,
+"/linux/./include/linux/pwm.h, 108:  in polarity_show",struct.device[1][888888][2],unknown:sysfs,
+"/linux/drivers/pwm/sysfs.c, 182:  in polarity_store",struct.device[1],fp:cant-change,
+"/linux/drivers/pwm/sysfs.c, 33:  in capture_show",struct.device[1],fp:cant-change,
+"/linux/drivers/pwm/sysfs.c, 33:  in pwm_unexport_match",struct.device[1],fp:cant-change,
+"/linux/./include/linux/kobject.h, 90:  in swiotlb_bounce",struct.spi_controller[1][888888][0],fp:safe,"dev_WARN_ONCE, gedubbeld"
+"/linux/drivers/spi/spi.c, 50:  in spidev_release",struct.device[1],fp:cleanup,
+"/linux/drivers/spi/spi.c, 1911:  in spi_queued_transfer",struct.spi_controller[33],fp:incorrect-rule,"queue_lock moet genomen worden ipv bus_lock_mutex, en dat is het geval"
+"/linux/lib/list_debug.c, 26:  in __list_add_valid",struct.spi_controller[1][888888][0],fp:incorrect-rule,"queue_lock moet genomen worden ipv bus_lock_mutex, en dat is het geval"
+"/linux/./include/linux/list.h, 73:  in spi_queued_transfer",struct.spi_controller[1][888888][0],fp:incorrect-rule,"queue_lock moet genomen worden ipv bus_lock_mutex, en dat is het geval"
+"/linux/drivers/spi/spi.c, 1832:  in spi_controller_resume",struct.spi_controller[33],fp:incorrect-rule,"queue_lock moet genomen worden ipv bus_lock_mutex, en dat is het geval"
+"/linux/drivers/spi/spi.c, 1837:  in spi_controller_resume",struct.spi_controller[33],fp:incorrect-rule,"queue_lock moet genomen worden ipv bus_lock_mutex, en dat is het geval"
+"/linux/drivers/spi/spi.c, 3043:  in __spi_controller_match",struct.device[1],fp:cant-change,weer device[1] met lock device[0]…
+"/linux/drivers/spi/spi.c, 551:  in spi_dev_check",struct.device[1],fp:init,bij het device registreren
+"/linux/drivers/spi/spi.c, 4202:  in spi_acpi_controller_match",struct.device[1],fp:cant-change,
+"/linux/drivers/tty/tty_port.c, 222:  in tty_port_alloc_xmit_buf",struct.tty_port[15],probable,"De NULL check zou in principe onder lock moeten om consistent te zijn, hoewel het waarschijnlijk niet echt uit maakt in de praktijk?"
+"/linux/drivers/tty/hvc/hvc_console.c, 510:  in hvc_write",struct.hvc_struct[7],probable,
+"/linux/drivers/tty/tty_ldisc.c, 274:  in tty_ldisc_ref",struct.tty_struct[24][888888][7],fp:tool-bug,De verwachte lock is weldegelijk genomen
+"/linux/./include/linux/list.h, 282:  in univ8250_release_irq",struct.irq_info[3][888888][0],fp:cleanup,
+"/linux/drivers/tty/serial/8250/8250_dw.c, 353:  in dw8250_set_termios",struct.uart_port[34],probable,gedubbeld
+"/linux/drivers/tty/serial/8250/8250_dw.c, 355:  in dw8250_set_termios",struct.uart_port[34],probable,
+"/linux/drivers/tty/serial/8250/8250_dma.c, 257:  in serial8250_release_dma",struct.uart_port[21][888888][8],fp:cleanup,
+"/linux/drivers/tty/serial/8250/8250_dma.c, 258:  in serial8250_release_dma",struct.uart_port[21][888888][8],fp:cleanup,
+"/linux/drivers/tty/serial/8250/8250_dma.c, 260:  in serial8250_release_dma",struct.uart_port[21][888888][8],fp:cleanup,
+"/linux/drivers/tty/serial/8250/8250_dma.c, 261:  in serial8250_release_dma",struct.uart_port[21][888888][8],fp:cleanup,
+"/linux/drivers/tty/serial/serial_core.c, 1531:  in uart_close",struct.uart_state[7],fp:cleanup,gedubbeld
+"/linux/./include/linux/serial_core.h, 432:  in uart_write",struct.uart_state[5][888888][35],unknown:uninterpretable,
+"/linux/./arch/x86/include/asm/atomic.h, 29:  in uart_carrier_raised",struct.tty_port[1],fp:atomics,refcount
+"/linux/./arch/x86/include/asm/atomic.h, 29:  in uart_dtr_rts",struct.tty_port[1],fp:atomics,refcount
+"/linux/drivers/tty/serial/serial_core.c, 2118:  in uart_tty_port_shutdown",struct.tty_port[1],fp:cleanup,weer device[1] met lock device[0]…
+"/linux/drivers/tty/serial/serial_core.c, 2121:  in uart_tty_port_shutdown",struct.tty_port[1],fp:cleanup,weer device[1] met lock device[0]…
+"/linux/drivers/tty/serdev/core.c, 140:  in serdev_remove_device",struct.device[1],fp:cleanup,
+"/linux/drivers/tty/serdev/core.c, 143:  in serdev_remove_device",struct.device[1][888888][2],fp:cleanup,
+"/linux/drivers/tty/serdev/core.c, 417:  in serdev_drv_probe",struct.device[6][888888][1],fp:init,
+"/linux/drivers/tty/serdev/core.c, 78:  in serdev_ctrl_release",struct.device[1],fp:cleanup,
+"/linux/drivers/leds/led-class.c, 257:  in led_put",struct.device[1],fp:cleanup,
+"/linux/./include/linux/list.h, 36:  in device_initialize",struct.device[1],fp:init,gedubbeld
+"/linux/drivers/base/power/power.h, 6:  in device_initialize",struct.device[1],fp:init,
+"/linux/drivers/base/power/power.h, 9:  in device_initialize",struct.device[1],fp:init,
+"/linux/drivers/base/power/main.c, 100:  in device_pm_sleep_init",struct.device[1],fp:init,
+"/linux/drivers/base/power/main.c, 103:  in device_pm_sleep_init",struct.device[1],fp:init,
+"/linux/./include/linux/list.h, 36:  in device_pm_sleep_init",struct.device[1],fp:init,veel gedubbeld???
+"/linux/./include/linux/list.h, 36:  in pm_runtime_init",struct.device[1],fp:init,
+"/linux/drivers/powercap/powercap_sys.c, 389:  in powercap_release",struct.device[1],fp:cleanup,
+"/linux/drivers/powercap/powercap_sys.c, 427:  in enabled_show",struct.device[1],fp:cant-change,
+"/linux/drivers/powercap/powercap_sys.c, 451:  in enabled_store",struct.device[1],fp:cant-change,
+"/linux/drivers/regulator/core.c, 199:  in regulator_sync_voltage_rdev",struct.regulator_dev[11],fp:tool-bug,"regular_unlock wordt gecalled met lock, maar die functie neemt niet zelf de lock, gedubbeld"
+"/linux/drivers/regulator/core.c, 200:  in regulator_sync_voltage_rdev",struct.regulator_dev[10],fp:tool-bug,"regular_unlock wordt gecalled met lock, maar die functie neemt niet zelf de lock, gedubbeld"
+"/linux/kernel/locking/mutex.c, 761:  in ww_mutex_unlock",struct.regulator_dev[9][1],fp:tool-bug,ww_mutex_unlock ???
+"/linux/kernel/locking/mutex.c, 765:  in ww_mutex_unlock",struct.regulator_dev[9][1][888888][2],fp:tool-bug,ww_mutex_unlock ???
+"/linux/kernel/locking/mutex.c, 766:  in ww_mutex_unlock",struct.regulator_dev[9][1][888888][2],fp:tool-bug,ww_mutex_unlock ???
+"/linux/kernel/locking/mutex.c, 767:  in ww_mutex_unlock",struct.regulator_dev[9][1][888888][2],fp:tool-bug,ww_mutex_unlock ???
+"/linux/kernel/locking/mutex.c, 767:  in ww_mutex_unlock",struct.regulator_dev[9][2],fp:tool-bug,ww_mutex_unlock ???
+"/linux/kernel/locking/mutex.c, 767:  in ww_mutex_unlock",struct.regulator_dev[9][1],fp:tool-bug,ww_mutex_unlock ???
+"/linux/drivers/regulator/core.c, 204:  in regulator_sync_voltage_rdev",struct.regulator_dev[11],fp:tool-bug,"regular_unlock wordt gecalled met lock, maar die functie neemt niet zelf de lock, gedubbeld"
+"/linux/drivers/regulator/fixed-helper.c, 18:  in regulator_fixed_release",struct.device[1],fp:cleanup,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_dev_pm_get_state",struct.device[1],unknown:uninterpretable,
+"/linux/drivers/pnp/core.c, 114:  in pnp_release_device",struct.device[1],fp:cleanup,
+"/linux/lib/list_debug.c, 42:  in __list_del_entry_valid",struct.device[1][888888][0][1],fp:cleanup,
+"/linux/lib/list_debug.c, 43:  in __list_del_entry_valid",struct.device[1][888888][0][0],fp:cleanup,
+"/linux/lib/list_debug.c, 51:  in __list_del_entry_valid",struct.device[1][888888][0][1][888888][0],fp:cleanup,
+"/linux/lib/list_debug.c, 54:  in __list_del_entry_valid",struct.device[1][888888][0][0][888888][1],fp:cleanup,
+"/linux/./include/linux/list.h, 135:  in pnp_release_device",struct.device[1][888888][1],fp:cleanup,
+"/linux/./include/linux/list.h, 135:  in pnp_release_device",struct.device[1][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 113:  in pnp_release_device",struct.device[1][888888][1][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 147:  in pnp_release_device",struct.device[1][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 148:  in pnp_release_device",struct.device[1][888888][1],fp:cleanup,
+"/linux/drivers/pnp/card.c, 141:  in pnp_release_card",struct.device[1],fp:cleanup,
+"/linux/drivers/pnp/card.c, 143:  in pnp_release_card",struct.device[1][888888][1],fp:cleanup,
+"/linux/drivers/pnp/card.c, 0:  in card_id_show",struct.device[1],fp:tool-bug,
+"/linux/drivers/pnp/card.c, 0:  in card_id_show",struct.device[1][888888][1],fp:tool-bug,
+"/linux/drivers/pnp/interface.c, 0:  in resources_show",struct.device[1],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 275:  in resources_show",struct.device[1][888888][3],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 286:  in resources_show",struct.device[1][888888][1],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 287:  in resources_show",struct.device[1][888888][3],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 0:  in options_show",struct.device[1],unknown:sysfs,
+"/linux/drivers/pnp/base.h, 95:  in options_show",struct.device[1][888888][1],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 192:  in options_show",struct.device[1][888888][2],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 61:  in options_show",struct.device[1][888888][0],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 62:  in options_show",struct.device[1][888888][1],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 63:  in options_show",struct.device[1][888888][2],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 64:  in options_show",struct.device[1][888888][3],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 159:  in options_show",struct.device[1][888888][0],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 160:  in options_show",struct.device[1][888888][1],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 161:  in options_show",struct.device[1][888888][2],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 162:  in options_show",struct.device[1][888888][3],unknown:sysfs,
+"/linux/drivers/pnp/interface.c, 109:  in options_show",struct.device[1][888888][3],unknown:sysfs,getripled
+"/linux/drivers/pnp/interface.c, 117:  in options_show",struct.device[1][888888][3],unknown:sysfs,
+"/linux/drivers/dma/hsu/hsu.c, 296:  in hsu_dma_issue_pending",struct.dma_chan[1],fp:tool-bug,struct.dma_chan[7] is de lock zogezegd maar das geen lock
+"/linux/drivers/dma/hsu/hsu.c, 115:  in hsu_dma_issue_pending",struct.dma_chan[1],fp:tool-bug,struct.dma_chan[7] is de lock zogezegd maar das geen lock
+"/linux/drivers/dma/hsu/../dmaengine.h, 73:  in hsu_dma_tx_status",struct.dma_chan[2],unknown:uninterpretable,
+"/linux/mm/mempool.c, 492:  in mempool_free",struct.mempool_s[1],fp:barriers,
+"/linux/drivers/iommu/amd/iommu.c, 828:  in __iommu_queue_command_sync",struct.amd_iommu[19],fp:tool-bug,"cmd_buf_tail, maar juiste lock weldegelijk genomen"
+"/linux/drivers/iommu/amd/iommu.c, 1002:  in __iommu_queue_command_sync",struct.amd_iommu[19],fp:tool-bug,"cmd_buf_tail, maar juiste lock weldegelijk genomen"
+"/linux/drivers/iommu/amd/iommu.c, 1004:  in __iommu_queue_command_sync",struct.amd_iommu[18],fp:tool-bug,"cmd_buf_head, maar juiste lock weldegelijk genomen"
+"/linux/drivers/iommu/amd/iommu.c, 1018:  in __iommu_queue_command_sync",struct.amd_iommu[18],fp:tool-bug,"cmd_buf_head, maar juiste lock weldegelijk genomen"
+"/linux/drivers/iommu/amd/iommu.c, 823:  in __iommu_queue_command_sync",struct.amd_iommu[19],fp:tool-bug,"cmd_buf_tail, maar juiste lock weldegelijk genomen"
+"/linux/drivers/iommu/amd/iommu.c, 828:  in __iommu_queue_command_sync",struct.amd_iommu[18],fp:tool-bug,"cmd_buf_tail, maar juiste lock weldegelijk genomen"
+"/linux/drivers/iommu/amd/init.c, 668:  in amd_iommu_reset_cmd_buffer",struct.amd_iommu[18],fp:init,
+"/linux/drivers/iommu/amd/init.c, 669:  in amd_iommu_reset_cmd_buffer",struct.amd_iommu[19],fp:init,
+"/linux/drivers/iommu/iommu.c, 1500:  in fsl_mc_device_group",struct.device[1],fp:incorrect-rule,
+"/linux/drivers/iommu/iommu.c, 1603:  in iommu_group_default_domain",struct.iommu_group[9],probable,
+"/linux/drivers/iommu/iommu.c, 3156:  in iommu_group_store_type",struct.iommu_group[9],fp:cant-change,
+"/linux/drivers/iommu/io-pgfault.c, 206:  in iommu_queue_iopf",struct.dev_iommu[2],fp:tool-bug,"Gebruikt in indirect call, gelocked in https://elixir.bootlin.com/linux/v5.14.11/source/drivers/iommu/iommu.c#L1116"
+"/linux/drivers/edac/edac_mc_sysfs.c, 682:  in mci_reset_counters_store",struct.device[1],probable,
+"/linux/drivers/edac/edac_mc_sysfs.c, 687:  in mci_reset_counters_store",struct.device[1],probable,
+"/linux/drivers/edac/edac_mc_sysfs.c, 792:  in mci_ctl_name_show",struct.device[1],fp:cant-change,Wordt 1x ingesteld in de probe functie
+"/linux/drivers/edac/edac_mc_sysfs.c, 783:  in mci_seconds_show",struct.device[1],fp:safe,"Wordt 1x gelezen in deze functie om een veschil mee te berekenen, moet niet consistent zijn tov andere reads want er zijn geen andere reads"
+"/linux/drivers/edac/edac_mc_sysfs.c, 756:  in mci_ce_count_show",struct.device[1],fp:safe,"Wordt 1x gelezen in deze functie om een veschil mee te berekenen, moet niet consistent zijn tov andere reads want er zijn geen andere reads"
+"/linux/drivers/edac/edac_mc_sysfs.c, 826:  in mci_max_location_show",struct.device[1],fp:cant-change,1x geset: https://elixir.bootlin.com/linux/v5.14.11/source/drivers/edac/edac_mc.c#L455
+"/linux/drivers/edac/edac_mc_sysfs.c, 826:  in mci_max_location_show",struct.device[1],fp:cant-change,1x geset: https://elixir.bootlin.com/linux/v5.14.11/source/drivers/edac/edac_mc.c#L455
+"/linux/drivers/edac/edac_mc_sysfs.c, 826:  in mci_max_location_show",struct.device[1][888888][0],fp:cant-change,1x geset: https://elixir.bootlin.com/linux/v5.14.11/source/drivers/edac/edac_mc.c#L455
+"/linux/drivers/edac/edac_mc_sysfs.c, 827:  in mci_max_location_show",struct.device[1][888888][1],fp:cant-change,1x geset: https://elixir.bootlin.com/linux/v5.14.11/source/drivers/edac/edac_mc.c#L455
+"/linux/drivers/edac/edac_mc_sysfs.c, 491:  in dimmdev_label_show",struct.device[1],fp:cant-change,DIMM label is een char[] en kan niet veranderen
+"/linux/drivers/edac/edac_mc_sysfs.c, 541:  in dimmdev_dev_type_show",struct.device[1],fp:cant-change,Memory device type kan niet veranderen
+"/linux/drivers/input/keyboard/atkbd.c, 1315:  in atkbd_reconnect",struct.serio[16],probable,wel niet 100% overtuigd
+"/linux/drivers/input/mousedev.c, 142:  in mousedev_event",struct.mousedev[0],fp:safe,
+"/linux/drivers/input/mousedev.c, 209:  in mousedev_event",struct.mousedev[0],fp:safe,
+"/linux/drivers/input/mousedev.c, 820:  in mousedev_cleanup",struct.mousedev[0],fp:cleanup,
+"/linux/drivers/input/ff-core.c, 28:  in erase_effect",struct.input_dev[20][888888][999999],fp:incorrect-rule,ff→mutex moet genomen worden en dat is het geval
+"/linux/drivers/input/ff-core.c, 28:  in input_ff_event",struct.ff_device[999999],probable,
+"/linux/drivers/input/ff-core.c, 28:  in input_ff_event",struct.input_dev[20][888888][999999],probable,
+"/linux/drivers/base/power/wakeup.c, 462:  in device_set_wakeup_enable",struct.device[1],fp:init,
+"/linux/drivers/base/power/wakeup.c, 762:  in wakeup_source_destroy",struct.device[6][888888][18],fp:cleanup,
+"/linux/drivers/base/power/wakeup.c, 718:  in wakeup_source_deactivate",struct.device[6][888888][18],fp:cleanup,gedubbeld
+"/linux/drivers/base/power/wakeup.c, 485:  in device_set_wakeup_capable",struct.device[1],unknown:uninterpretable,
+"/linux/drivers/base/power/wakeup.c, 488:  in device_set_wakeup_capable",struct.device[1],unknown:uninterpretable,
+"/linux/drivers/input/input.c, 1663:  in input_dev_uevent",struct.device[1],fp:cant-change,
+"/linux/drivers/input/input.c, 1345:  in input_dev_show_phys",struct.device[1],fp:cant-change,
+"/linux/./include/linux/ioport.h, 214:  in available_size_show",struct.dax_region[7][888888][1],fp:incorrect-rule,Correct lock is right above it
+"/linux/./include/linux/ioport.h, 214:  in available_size_show",struct.dax_region[7][888888][0],fp:incorrect-rule,Correct lock is right above it
+"/linux/drivers/dax/bus.c, 169:  in dax_bus_probe",struct.device[33][888888][7],fp:init,
+"/linux/drivers/dax/bus.c, 170:  in dax_bus_probe",struct.device[33][888888][7],fp:init,
+"/linux/drivers/dax/bus.c, 623:  in start_show",struct.device[1],fp:cant-change,parent kan niet veranderen
+"/linux/drivers/dax/bus.c, 627:  in start_show",struct.device[1],fp:tool-bug,de get_range functie neemt ook een lock
+"/linux/drivers/dax/bus.c, 623:  in end_show",struct.device[1],fp:cant-change,parent kan niet veranderen
+"/linux/drivers/dax/bus.c, 627:  in end_show",struct.device[1],fp:tool-bug,de get_range functie neemt ook een lock
+"/linux/drivers/dax/bus.c, 623:  in pgoff_show",struct.device[1],fp:cant-change,parent kan niet veranderen
+"/linux/drivers/dax/bus.c, 627:  in pgoff_show",struct.device[1],fp:tool-bug,de get_range functie neemt ook een lock
+"/linux/drivers/acpi/bus.c, 911:  in acpi_driver_match_device",struct.device[6][888888][7],fp:init,
+"/linux/drivers/base/power/wakeup.c, 0:  in device_init_wakeup",struct.device[1],fp:cleanup,
+"/linux/drivers/base/power/wakeup.c, 488:  in device_init_wakeup",struct.device[1],fp:cleanup,
+"/linux/drivers/base/power/wakeup.c, 341:  in device_wakeup_enable",struct.device[1],fp:cleanup,
+"/linux/drivers/rtc/interface.c, 749:  in rtc_irq_set_state",struct.rtc_device[17],fp:tool-bug,gelocked onder juiste lock hier https://elixir.bootlin.com/linux/v5.14.11/source/drivers/rtc/dev.c#L213
+"/linux/drivers/rtc/class.c, 30:  in rtc_device_release",struct.device[1],fp:cleanup,
+"/linux/./include/linux/pm_wakeup.h, 84:  in cmos_resume",struct.device[1],unknown:lack-knowledge,"lijkt er op dat een global lock genomen wordt, maar niet zo zeker hoe dit relate"
+"/linux/drivers/rtc/proc.c, 66:  in rtc_proc_show",struct.rtc_device[17],unknown:procfs,
+"/linux/drivers/base/power/wakeup.c, 703:  in wakeup_source_deactivate",struct.device[6][888888][14],fp:tool-bug,locked under right lock by all callers
+"/linux/drivers/base/power/wakeup.c, 722:  in wakeup_source_deactivate",struct.device[6][888888][7],fp:tool-bug,locked under right lock by all callers
+"/linux/drivers/base/power/wakeup.c, 723:  in wakeup_source_deactivate",struct.device[6][888888][8],fp:tool-bug,locked under right lock by all callers
+"/linux/drivers/base/power/wakeup.c, 724:  in wakeup_source_deactivate",struct.device[6][888888][8],fp:tool-bug,locked under right lock by all callers
+"/linux/./include/linux/pm_wakeup.h, 79:  in rtc_attr_is_visible",struct.device[1],unknown:uninterpretable,
+"/linux/drivers/rtc/sysfs.c, 26:  in name_show",struct.device[1],fp:cant-change,
+"/linux/drivers/rtc/sysfs.c, 27:  in name_show",struct.device[1],fp:cant-change,
+"/linux/./include/linux/device.h, 625:  in name_show",struct.device[1][888888][3],fp:cant-change,
+"/linux/./include/linux/kobject.h, 90:  in name_show",struct.device[1][888888][0],fp:cant-change,
+"/linux/drivers/rtc/sysfs.c, 80:  in max_user_freq_show",struct.device[1],unknown:sysfs,
+"/linux/drivers/devfreq/devfreq.c, 754:  in devfreq_dev_release",struct.device[1],fp:cleanup,
+"/linux/drivers/devfreq/devfreq.c, 748:  in devfreq_dev_release",struct.device[1],fp:cleanup,
+"/linux/drivers/devfreq/devfreq.c, 742:  in devfreq_dev_release",struct.device[1],fp:cleanup,
+"/linux/drivers/devfreq/devfreq.c, 737:  in devfreq_dev_release",struct.device[1],fp:cleanup,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_lpss_suspend_late",struct.device[1],fp:cleanup,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_lpss_poweroff_late",struct.device[1],fp:cleanup,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_lpss_suspend_noirq",struct.device[1],fp:cleanup,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_lpss_poweroff_noirq",struct.device[1],fp:cleanup,
+"/linux/drivers/base/core.c, 4727:  in set_primary_fwnode",struct.device[1],fp:cant-change,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_dev_needs_resume",struct.device[1],probable,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_subsys_suspend_late",struct.device[1],probable,
+"/linux/./include/linux/pm_wakeup.h, 84:  in acpi_subsys_poweroff_late",struct.device[1],probable,
+"/linux/drivers/acpi/scan.c, 1486:  in acpi_dma_get_range",struct.device[1],fp:cant-change,
+"/linux/drivers/acpi/bus.c, 890:  in acpi_device_get_match_data",struct.device[6][888888][7],unknown:lack-knowledge,
+"/linux/drivers/pci/pci-acpi.c, 1172:  in acpi_pci_find_companion",struct.device[1],fp:cant-change,
+"/linux/drivers/base/power/wakeup.c, 462:  in device_wakeup_disable",struct.device[1],fp:safe,
+"/linux/./include/linux/pci.h, 662:  in acpi_pci_bridge_d3",struct.device[1],fp:cant-change,fw_node field can’t change
+"/linux/./include/linux/pm_wakeup.h, 79:  in pci_pm_suspend_noirq",struct.device[1],probable,
+"/linux/./include/linux/pm_wakeup.h, 79:  in pci_dev_run_wake",struct.device[1],fp:init,
+"/linux/lib/list_debug.c, 23:  in __list_add_valid",struct.controller[7][1][888888][0][888888][1],fp:incorrect-rule,"cmd_lock must be taken, not ctrl_lock"
+"/linux/./include/linux/list.h, 70:  in prepare_to_wait_event",struct.controller[7][1][888888][0][888888][1],fp:incorrect-rule,"cmd_lock must be taken, not ctrl_lock"
+"/linux/drivers/pci/hotplug/shpchp_core.c, 134:  in cleanup_slots",struct.controller[5],fp:cleanup,
+"/linux/./include/linux/list.h, 135:  in resource_list_free",struct.device[6][888888][1],fp:cleanup,
+"/linux/./include/linux/list.h, 113:  in resource_list_free",struct.device[6][888888][1][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 148:  in resource_list_free",struct.device[6][888888][1],fp:cleanup,
+"/linux/drivers/pci/probe.c, 2250:  in pci_release_dev",struct.device[14][310],fp:cleanup,
+"/linux/drivers/pinctrl/intel/pinctrl-cherryview.c, 0:  in chv_gpio_irq_type",struct.irq_desc[3],unknown:uninterpretable,
+"/linux/./include/linux/irqdesc.h, 202:  in amd_gpio_irq_set_type",struct.irq_desc[3],probable,
+"/linux/drivers/hwmon/hwmon.c, 914:  in devm_hwmon_release",struct.device[1],fp:cleanup,
+"/linux/drivers/dma-buf/dma-buf.c, 1335:  in dma_buf_vunmap",struct.dma_buf[5],fp:safe,
+"/linux/drivers/dma-buf/dma-fence.c, 462:  in dma_fence_signal",struct.dma_fence[1][888888][0],fp:is-lock,
+"/linux/drivers/dma-buf/dma-fence.c, 464:  in dma_fence_signal",struct.dma_fence[1][888888][0],fp:is-lock,
+"/linux/./include/linux/dma-fence.h, 461:  in dma_fence_chain_init",struct.dma_fence[1][888888][0],fp:cant-change,
+"/linux/drivers/dma-buf/dma-fence.c, 651:  in dma_fence_add_callback",struct.dma_fence[1][888888][0],fp:is-lock,
+"/linux/drivers/dma-buf/dma-fence.c, 661:  in dma_fence_add_callback",struct.dma_fence[1][888888][0],fp:is-lock,
+"/linux/./include/linux/list.h, 162:  in dma_fence_signal_timestamp_locked",struct.dma_fence[2][0][888888][1],fp:tool-limitation,"Work happens on a stub structure locked with its own global lock, instead of on a real instance"
+"/linux/./include/linux/list.h, 164:  in dma_fence_signal_timestamp_locked",struct.dma_fence[1][888888][0],fp:tool-limitation,"Work happens on a stub structure locked with its own global lock, instead of on a real instance"
+"/linux/drivers/base/node.c, 240:  in indexing_show",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/list.h, 282:  in devm_free_pages",struct.device[1][888888][0],fp:cleanup,
+"/linux/./include/linux/list.h, 282:  in devm_free_percpu",struct.device[1][888888][0],fp:cleanup,
+"/linux/drivers/base/regmap/regmap.c, 3141:  in regmap_async_complete_cb",struct.regmap[16],fp:incorrect-rule,"must use async_lock, not the lock of the parent struct"
+"/linux/drivers/base/core.c, 3998:  in root_device_unregister",struct.device[1],fp:cleanup,
+"/linux/drivers/base/core.c, 2200:  in device_release",struct.device[1],fp:cleanup,
+"/linux/./include/linux/device.h, 625:  in device_release",struct.device[1],fp:cleanup,
+"/linux/drivers/base/attribute_container.c, 116:  in attribute_container_release",struct.device[1],fp:cleanup,
+"/linux/./include/linux/kobject.h, 90:  in kobject_put",struct.device[1][888888][0][0],fp:cleanup,
+"/linux/drivers/base/bus.c, 688:  in device_reprobe",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/dd.c, 966:  in __device_attach",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/dd.c, 986:  in __device_attach",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/bus.c, 691:  in device_reprobe",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/dd.c, 1272:  in device_driver_detach",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/core.c, 0:  in device_links_busy",struct.device[1],unknown:uninterpretable,
+"/linux/drivers/base/dd.c, 1139:  in __driver_attach",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/dd.c, 1141:  in __driver_attach",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/power/main.c, 1950:  in device_pm_wait_for_dev",struct.device[1],fp:safe,
+"/linux/drivers/base/power/main.c, 242:  in device_pm_wait_for_dev",struct.device[1],fp:safe,
+"/linux/drivers/base/power/main.c, 242:  in dpm_wait_fn",struct.device[1],fp:safe,
+"/linux/./include/linux/device.h, 724:  in async_show",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/device.h, 718:  in async_store",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/device.h, 719:  in async_store",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/device.h, 712:  in async_store",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/device.h, 713:  in async_store",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/pm_wakeup.h, 79:  in wakeup_show",struct.device[1],unknown:sysfs,
+"/linux/./include/linux/pm_wakeup.h, 79:  in wakeup_store",struct.device[1],unknown:sysfs,
+"/linux/drivers/base/power/wakeup_stats.c, 108:  in prevent_suspend_time_ms_show",struct.device[1],unknown:sysfs,
+"/linux/drivers/base/power/wakeup_stats.c, 108:  in prevent_suspend_time_ms_show",struct.device[8][888888][120],unknown:sysfs,
+"/linux/drivers/base/power/wakeup.c, 180:  in wakeup_source_add",struct.wakeup_source[18],fp:init,gedubbeld
+"/linux/drivers/base/power/wakeup.c, 718:  in wakeup_source_deactivate",struct.wakeup_source[18],fp:init,gedubbeld
+"/linux/drivers/base/power/runtime.c, 1527:  in pm_runtime_irq_safe",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/power/qos.c, 632:  in dev_pm_qos_add_ancestor_request",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/power/qos.c, 638:  in dev_pm_qos_add_ancestor_request",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/power/qos.c, 638:  in dev_pm_qos_add_ancestor_request",struct.device[1][888888][1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/power/qos.c, 643:  in dev_pm_qos_add_ancestor_request",struct.device[1][888888][1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/power/qos.c, 643:  in dev_pm_qos_add_ancestor_request",struct.device[1],fp:cant-change,parent field can’t change
+"/linux/drivers/base/container.c, 24:  in container_offline",struct.device[1],probable,
+"/linux/drivers/base/platform-msi.c, 137:  in platform_msi_alloc_descs_with_irq",struct.device[1],fp:incorrect-rule,
+"/linux/drivers/base/platform-msi.c, 139:  in platform_msi_alloc_descs_with_irq",struct.device[1][888888][2],fp:cant-change,msi_index
+"/linux/drivers/xen/xenbus/xenbus_dev_frontend.c, 0:  in xenbus_dev_queue_reply",struct.xenbus_file_priv[1],fp:tool-bug,"De verwachte lock wordt weldegelijk genomen, de tool inferred de juiste lock zelfs maar denkt van niet"
+"/linux/drivers/xen/grant-table.c, 819:  in gnttab_page_cache_init",struct.gnttab_page_cache[1],fp:init,
+"/linux/drivers/xen/grant-table.c, 873:  in gnttab_page_cache_init",struct.gnttab_page_cache[2],fp:init,
+"/linux/./include/linux/backlight.h, 352:  in backlight_update_status",struct.backlight_device[3],probable,
+"/linux/./include/linux/list.h, 35:  in fb_deferred_io_init",struct.fb_deferred_io[2][0],fp:init,
+"/linux/drivers/video/fbdev/xen-fbfront.c, 573:  in xenfb_init_shared_page",struct.xenfb_info[9][888888][3],fp:init,
+"/linux/drivers/video/fbdev/xen-fbfront.c, 573:  in xenfb_init_shared_page",struct.xenfb_info[9][888888][2],fp:init,
+"/linux/drivers/video/fbdev/xen-fbfront.c, 80:  in xenfb_refresh",struct.xenfb_info[9][888888][3],fp:barriers,
+"/linux/drivers/video/fbdev/xen-fbfront.c, 85:  in xenfb_refresh",struct.xenfb_info[9][888888][3],fp:barriers,
+"/linux/lib/flex_proportions.c, 113:  in __fprop_inc_single",struct.fprop_local_single[1],fp:recheck,
+"/linux/lib/flex_proportions.c, 134:  in __fprop_inc_single",struct.fprop_local_single[0],probable,
+"/linux/lib/flex_proportions.c, 113:  in fprop_fraction_single",struct.fprop_local_single[1],fp:recheck,
+"/linux/lib/flex_proportions.c, 149:  in fprop_fraction_single",struct.fprop_local_single[0],probable,
+"/linux/lib/flex_proportions.c, 196:  in fprop_reflect_period_percpu",struct.fprop_local_single[1],fp:recheck,
+"/linux/lib/flex_proportions.c, 196:  in fprop_reflect_period_percpu",struct.fprop_local_percpu[1],fp:cant-change,Per-cpu
+"/linux/ipc/mqueue.c, 1698:  in mq_clear_sbinfo",struct.inode[8][888888][31][888888][14][888888][1][888888][31],fp:tool-bug,Lock is taken in line above
+"/linux/lib/llist.c, 32:  in llist_add_batch",struct.inode[8][888888][31][888888][23][0],fp:tool-bug,Lock is taken in line above
+"/linux/lib/llist.c, 32:  in llist_add_batch",struct.inode[8][888888][31][888888][23][0],fp:tool-bug,Lock is taken in line above
+"/linux/mm/hugetlb.c, 1215:  in hstate_next_node_to_alloc",struct.hstate[1],unknown:lack-knowledge,
+"/linux/mm/hugetlb.c, 1216:  in hstate_next_node_to_alloc",struct.hstate[1],unknown:lack-knowledge,
+"/linux/mm/hugetlb.c, 3799:  in hugetlb_acct_memory",struct.hstate[999999],fp:cleanup,
+"/linux/kernel/sched/completion.c, 34:  in complete",struct.percpu_ref[1][0],fp:incorrect-rule,
+"/linux/kernel/sched/completion.c, 35:  in complete",struct.percpu_ref[1][0],fp:incorrect-rule,
+"/linux/lib/list_debug.c, 26:  in __list_add_valid",struct.raw_spinlock[0],fp:is-lock,
+"/linux/./include/linux/list.h, 835:  in pin_remove",struct.bsd_acct_struct[3][0],fp:incorrect-rule,global lock
+"/linux/./arch/x86/include/asm/atomic64_64.h, 22:  in pool_mayday_timeout",struct.list_head[-8],fp:incorrect-rule,"right locks are there, looks like a field analysis problem"
+"/linux/kernel/seccomp.c, 1462:  in seccomp_notify_ioctl",struct.seccomp_filter[6],fp:cant-change,
+"/linux/kernel/irq/debug.h, 21:  in handle_bad_irq",struct.irq_desc[3],fp:debug,
+"/linux/./include/linux/irq.h, 346:  in irq_enable",struct.irq_desc[3],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 346:  in irq_enable",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/kernel/irq/internals.h, 225:  in irq_enable",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 351:  in irq_enable",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 351:  in irq_enable",struct.irq_desc[3],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 351:  in irq_enable",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/kernel/irq/chip.c, 0:  in irq_enable",struct.irq_desc[3],unknown:uninterpretable,
+"/linux/kernel/irq/chip.c, 0:  in irq_enable",struct.irq_desc[3][888888][0],unknown:uninterpretable,
+"/linux/./include/linux/irq.h, 356:  in irq_wait_for_poll",struct.irq_desc[3],fp:tool-bug,desc→lock is actually taken along the reported path
+"/linux/./include/linux/irq.h, 356:  in irq_wait_for_poll",struct.irq_desc[3][888888][0],fp:tool-bug,desc→lock is actually taken along the reported path
+"/linux/kernel/irq/internals.h, 230:  in handle_irq_event",struct.irq_desc[3],fp:tool-bug,lock is held upon entrace of function already
+"/linux/kernel/irq/internals.h, 230:  in handle_irq_event",struct.irq_desc[3][888888][0],fp:tool-bug,lock is held upon entrace of function already
+"/linux/./include/linux/irq.h, 346:  in irq_disable",struct.irq_desc[3],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 346:  in irq_disable",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/kernel/irq/internals.h, 230:  in irq_disable",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 351:  in irq_disable",struct.irq_desc[3],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 351:  in irq_disable",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/kernel/irq/chip.c, 0:  in irq_disable",struct.irq_desc[3],unknown:uninterpretable,
+"/linux/kernel/irq/chip.c, 0:  in irq_disable",struct.irq_desc[3][888888][0],unknown:uninterpretable,
+"/linux/kernel/irq/debug.h, 21:  in ack_bad",struct.irq_desc[3],fp:tool-limitation,This is dummy code that is never executed
+"/linux/./include/linux/irqdesc.h, 158:  in handle_irq_desc",struct.irq_desc[3],unknown:uninterpretable,
+"/linux/./include/linux/irq.h, 326:  in handle_irq_desc",struct.irq_desc[3],unknown:lack-knowledge,
+"/linux/./include/linux/irq.h, 326:  in handle_irq_desc",struct.irq_desc[3][888888][0],unknown:lack-knowledge,
+"/linux/./include/trace/events/power.h, 176:  in trace_event_raw_event_device_pm_callback_start",struct.device[1],unknown:lack-knowledge,
+"/linux/./include/linux/device.h, 625:  in trace_event_raw_event_device_pm_callback_start",struct.device[1][888888][3],unknown:lack-knowledge,
+"/linux/./include/linux/kobject.h, 90:  in trace_event_raw_event_device_pm_callback_start",struct.device[1][888888][0],unknown:lack-knowledge,
+"/linux/./include/trace/events/power.h, 176:  in perf_trace_device_pm_callback_start",struct.device[1],unknown:lack-knowledge,
+"/linux/./include/linux/device.h, 625:  in perf_trace_device_pm_callback_start",struct.device[1][888888][3],unknown:lack-knowledge,
+"/linux/./include/linux/kobject.h, 90:  in perf_trace_device_pm_callback_start",struct.device[1][888888][0],unknown:lack-knowledge,
+"/linux/kernel/bpf/queue_stack_maps.c, 37:  in queue_stack_map_push_elem",struct.bpf_queue_stack[2],fp:tool-bug,
+"/linux/kernel/bpf/queue_stack_maps.c, 216:  in queue_stack_map_push_elem",struct.bpf_queue_stack[2],fp:tool-bug,
+"/linux/kernel/bpf/queue_stack_maps.c, 217:  in queue_stack_map_push_elem",struct.bpf_queue_stack[2],fp:tool-bug,
+"/linux/./include/linux/list.h, 808:  in bpf_selem_unlink_map",struct.bpf_local_storage[0][888888][-1][1],fp:cleanup,
+"/linux/./include/linux/rculist.h, 194:  in bpf_selem_unlink_map",struct.bpf_local_storage[0][888888][-1][1],fp:cleanup,
+"/linux/./include/linux/list.h, 952:  in bpf_selem_unlink_storage_nolock",struct.bpf_local_storage[0][888888][-1][1],fp:cleanup,
+"/linux/./include/linux/list.h, 808:  in bpf_selem_unlink_storage_nolock",struct.bpf_local_storage[0][888888][-1][1],fp:cleanup,
+"/linux/./include/linux/rculist.h, 194:  in bpf_selem_unlink_storage_nolock",struct.bpf_local_storage[0][888888][-1][1],fp:cleanup,
+"/linux/kernel/bpf/bpf_local_storage.c, 130:  in bpf_selem_unlink_storage_nolock",struct.bpf_local_storage[999999],fp:cleanup,
+"/linux/kernel/bpf/bpf_local_storage.c, 132:  in bpf_selem_unlink_storage_nolock",struct.bpf_local_storage[999999],fp:cleanup,
+"/linux/kernel/bpf/bpf_local_storage.c, 216:  in bpf_local_storage_lookup",struct.bpf_local_storage[999999],fp:cleanup,
+"/linux/kernel/sched/cpupri.c, 213:  in cpupri_set",struct.rq[35][888888][19][1][888888][999999],fp:tool-limitation,bug/limitation: indirect call related
+"/linux/kernel/sched/cpupri.c, 269:  in cpupri_set",struct.rq[35][888888][19][1][888888][999999],fp:tool-limitation,bug/limitation: indirect call related
+"/linux/kernel/sched/cpufreq_schedutil.c, 760:  in sugov_start",struct.sugov_policy[6],fp:tool-limitation,bug/limitation: indirect call related
+"/linux/kernel/sched/cpufreq_schedutil.c, 763:  in sugov_start",struct.sugov_policy[7],fp:tool-limitation,bug/limitation: indirect call related
+"/linux/kernel/sched/cpufreq_schedutil.c, 765:  in sugov_start",struct.sugov_policy[15],fp:tool-limitation,bug/limitation: indirect call related
+"/linux/kernel/time/alarmtimer.c, 97:  in alarmtimer_rtc_add_device",struct.device[1],fp:cant-change,parent pointer
+"/linux/./include/linux/pm_wakeup.h, 84:  in alarmtimer_rtc_add_device",struct.device[1],unknown:lack-knowledge,
+"/linux/./include/linux/pm_wakeup.h, 84:  in alarmtimer_rtc_add_device",struct.device[1][888888][1],unknown:lack-knowledge,
+"/linux/kernel/printk/printk.c, 0:  in devkmsg_llseek",struct.devkmsg_user[0],fp:atomics,
+"/linux/./arch/x86/include/asm/atomic64_64.h, 22:  in devkmsg_poll",struct.devkmsg_user[0],fp:atomics,
+"/linux/kernel/rcu/srcutree.c, 354:  in process_srcu",struct.srcu_struct[6266],unknown:uninterpretable,
+"/linux/./arch/x86/include/asm/atomic.h, 41:  in refcount_warn_saturate",struct.fsnotify_group[1][0],fp:atomics,
+"/linux/lib/list_debug.c, 54:  in __list_del_entry_valid",struct.kthread_work[0][888888][1],fp:incorrect-rule,
+"/linux/./include/linux/list.h, 86:  in __kthread_queue_delayed_work",struct.kthread_worker[3][0],fp:tool-bug,
+"/linux/lib/list_debug.c, 23:  in __list_add_valid",struct.kthread_worker[3][0][888888][1],fp:tool-bug,
+"/linux/lib/list_debug.c, 26:  in __list_add_valid",struct.kthread_worker[3][0],fp:tool-bug,
+"/linux/./include/linux/list.h, 70:  in __kthread_queue_delayed_work",struct.kthread_worker[3][0][888888][1],fp:tool-bug,
+"/linux/./include/linux/list.h, 73:  in __kthread_queue_delayed_work",struct.kthread_worker[3][0],fp:tool-bug,
+"/linux/net/ipv4/inet_hashtables.c, 411:  in __inet_lookup_established",struct.inet_hashinfo[0][888888][0][888888][1],unknown:uninterpretable,
+"/linux/net/ipv4/inet_fragment.c, 291:  in inet_frag_destroy",struct.inet_frag_queue[11],fp:cleanup,
+"/linux/./include/linux/list.h, 821:  in del_timer",struct.inet_frag_queue[2][1],fp:cleanup,
+"/linux/./include/linux/list.h, 952:  in del_timer",struct.inet_frag_queue[2][0],fp:cleanup,
+"/linux/./include/linux/list.h, 835:  in del_timer",struct.inet_frag_queue[2][0],fp:cleanup,
+"/linux/./include/linux/list.h, 836:  in del_timer",struct.inet_frag_queue[2][1],fp:cleanup,
+"/linux/./include/linux/list.h, 838:  in del_timer",struct.inet_frag_queue[2][1][888888],fp:cleanup,
+"/linux/./include/linux/list.h, 840:  in del_timer",struct.inet_frag_queue[2][0][888888][1],fp:cleanup,
+"/linux/kernel/time/timer.c, 829:  in del_timer",struct.inet_frag_queue[2][1],fp:cleanup,
+"/linux/kernel/time/timer.c, 830:  in del_timer",struct.inet_frag_queue[2][0],fp:cleanup,
+"/linux/lib/rbtree.c, 496:  in rb_next",struct.inet_frag_queue[5][0][888888][2][888888][0],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 266:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][1][888888][2][888888][2][888888][2],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 268:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][1][888888][2][888888][2][888888][1],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 269:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][1][888888][2][888888][2][888888][2],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 270:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][1][888888][2][888888][2][888888][1],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 278:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][1][888888][2][888888][2][888888][2],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 159:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][2][888888][0],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 159:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][2][888888][0],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 281:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][0],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 289:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][1][888888][2][888888][2][888888][0],fp:cleanup,
+"/linux/./include/linux/rbtree_augmented.h, 291:  in rb_erase",struct.inet_frag_queue[5][0][888888][2][888888][1][888888][2][888888][2][888888][0],fp:cleanup,
+"/linux/./include/net/dst.h, 272:  in __kfree_skb",struct.inet_frag_queue[5][0][888888][2][888888][0],fp:cleanup,
+"/linux/./include/net/dst.h, 274:  in __kfree_skb",struct.inet_frag_queue[5][0][888888][2][888888][0],fp:cleanup,
+"/linux/./include/net/dst.h, 272:  in __kfree_skb",struct.inet_frag_queue[5][0][888888][2][888888][24][888888][0],fp:cleanup,
+"/linux/./include/net/dst.h, 274:  in __kfree_skb",struct.inet_frag_queue[5][0][888888][2][888888][24][888888][0],fp:cleanup,
+"/linux/lib/list_debug.c, 54:  in __list_del_entry_valid",struct.net[130][888888][1][0][888888][1],fp:cleanup,
+"/linux/./include/linux/list.h, 112:  in fib_notifier_ops_unregister",struct.net[130][888888][1][0][888888][1],fp:cleanup,
+"/linux/lib/idr.c, 232:  in idr_get_next_ul",struct.tcf_idrinfo[1][1],fp:cleanup,
+"/linux/lib/radix-tree.c, 118:  in idr_destroy",struct.tcf_idrinfo[1][1],fp:cleanup,gedubbeld
+"/linux/./include/linux/list.h, 86:  in __find_acq_core",struct.raw_spinlock[0],fp:is-lock,
+"/linux/./include/linux/list.h, 73:  in __find_acq_core",struct.raw_spinlock[0],fp:is-lock,
+"/linux/net/core/sock.c, 340:  in sk_error_report",struct.xdp_sock[3],fp:tool-bug,Right lock is taken a few lines prior
+"/linux/net/core/net-sysfs.c, 1843:  in netdev_release",struct.device[1],fp:cleanup,
+"/linux/./include/linux/skbuff.h, 2089:  in skb_dequeue_tail",struct.sk_buff_head[2],fp:tool-bug,Right lock is taken a few lines prior
+"/linux/net/core/net-procfs.c, 175:  in softnet_seq_show",struct.seq_file[5],unknown:sysfs,

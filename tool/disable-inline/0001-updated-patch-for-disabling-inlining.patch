@@ -1,0 +1,168 @@
+diff -ur clang-12.0.1.src/lib/CodeGen/CGCall.cpp clang/lib/CodeGen/CGCall.cpp
+--- clang-12.0.1.src/lib/CodeGen/CGCall.cpp	2021-06-28 18:23:38.000000000 +0200
++++ clang/lib/CodeGen/CGCall.cpp	2021-11-10 17:04:40.796096150 +0100
+@@ -5036,12 +5036,26 @@
+ 
+   // Apply always_inline to all calls within flatten functions.
+   // FIXME: should this really take priority over __try, below?
++
++
++  // nvd: for disabling inlining
++#ifndef KA_DISABLE_INLINING
+   if (CurCodeDecl && CurCodeDecl->hasAttr<FlattenAttr>() &&
+-      !(TargetDecl && TargetDecl->hasAttr<NoInlineAttr>())) {
++      !(Callee.getAbstractInfo().getCalleeDecl().getDecl() &&
++        Callee.getAbstractInfo()
++            .getCalleeDecl()
++            .getDecl()
++            ->hasAttr<NoInlineAttr>())) {
+     Attrs =
+         Attrs.addAttribute(getLLVMContext(), llvm::AttributeList::FunctionIndex,
+                            llvm::Attribute::AlwaysInline);
+   }
++#else
++    Attrs = 
++        Attrs.addAttribute(getLLVMContext(), llvm::AttributeList::FunctionIndex,
++                llvm::Attribute::NoInline);
++#endif
++
+ 
+   // Disable inlining inside SEH __try blocks.
+   if (isSEHTryScope()) {
+Only in clang/lib/CodeGen: CGCall.cpp.orig
+diff -ur clang-12.0.1.src/lib/CodeGen/CGCall.h clang/lib/CodeGen/CGCall.h
+--- clang-12.0.1.src/lib/CodeGen/CGCall.h	2021-06-28 18:23:38.000000000 +0200
++++ clang/lib/CodeGen/CGCall.h	2021-11-10 17:04:40.796096150 +0100
+@@ -25,6 +25,9 @@
+ // FIXME: Restructure so we don't have to expose so much stuff.
+ #include "ABIInfo.h"
+ 
++// patched by Navid Emamdoost
++#define KA_DISABLE_INLINING 1
++
+ namespace llvm {
+ class AttributeList;
+ class Function;
+Only in clang/lib/CodeGen: CGCall.h.orig
+diff -ur clang-12.0.1.src/lib/CodeGen/CodeGenModule.cpp clang/lib/CodeGen/CodeGenModule.cpp
+--- clang-12.0.1.src/lib/CodeGen/CodeGenModule.cpp	2021-06-28 18:23:38.000000000 +0200
++++ clang/lib/CodeGen/CodeGenModule.cpp	2021-11-10 17:04:40.796096150 +0100
+@@ -1679,12 +1679,23 @@
+       B.addAttribute(llvm::Attribute::StackProtectReq);
+   }
+ 
++#ifdef KA_DISABLE_INLINING
++  if (F->hasFnAttribute(llvm::Attribute::AlwaysInline)){
++	  F->removeFnAttr(llvm::Attribute::AlwaysInline);
++  }
++  B.addAttribute(llvm::Attribute::NoInline);
++#endif
++
+   if (!D) {
+     // If we don't have a declaration to control inlining, the function isn't
+     // explicitly marked as alwaysinline for semantic reasons, and inlining is
+     // disabled, mark the function as noinline.
+-    if (!F->hasFnAttribute(llvm::Attribute::AlwaysInline) &&
+-        CodeGenOpts.getInlining() == CodeGenOptions::OnlyAlwaysInlining)
++
++	// nvd
++#ifndef KA_DISABLE_INLINING
++  if (!F->hasFnAttribute(llvm::Attribute::AlwaysInline) &&
++		  CodeGenOpts.getInlining() == CodeGenOptions::OnlyAlwaysInlining)
++#endif
+       B.addAttribute(llvm::Attribute::NoInline);
+ 
+     F->addAttributes(llvm::AttributeList::FunctionIndex, B);
+@@ -1724,16 +1735,23 @@
+   } else if (D->hasAttr<NoInlineAttr>() && !F->hasFnAttribute(llvm::Attribute::AlwaysInline)) {
+     // Add noinline if the function isn't always_inline.
+     B.addAttribute(llvm::Attribute::NoInline);
+-  } else if (D->hasAttr<AlwaysInlineAttr>() &&
++  } 
++  // nvd
++#ifndef KA_DISABLE_INLINING
++  else if (D->hasAttr<AlwaysInlineAttr>() &&
+              !F->hasFnAttribute(llvm::Attribute::NoInline)) {
+     // (noinline wins over always_inline, and we can't specify both in IR)
+     B.addAttribute(llvm::Attribute::AlwaysInline);
+-  } else if (CodeGenOpts.getInlining() == CodeGenOptions::OnlyAlwaysInlining) {
++  }
++#endif
++  else if (CodeGenOpts.getInlining() == CodeGenOptions::OnlyAlwaysInlining) {
+     // If we're not inlining, then force everything that isn't always_inline to
+     // carry an explicit noinline attribute.
+     if (!F->hasFnAttribute(llvm::Attribute::AlwaysInline))
+       B.addAttribute(llvm::Attribute::NoInline);
+   } else {
++	  // nvd
++#ifndef KA_DISABLE_INLINING
+     // Otherwise, propagate the inline hint attribute and potentially use its
+     // absence to mark things as noinline.
+     if (auto *FD = dyn_cast<FunctionDecl>(D)) {
+@@ -1758,7 +1776,13 @@
+         B.addAttribute(llvm::Attribute::NoInline);
+       }
+     }
++#endif
+   }
++  
++  // nvd: overwritten inlining
++#ifdef KA_DISABLE_INLINING
++  B.addAttribute(llvm::Attribute::NoInline);
++#endif
+ 
+   // Add other optimization related attributes if we are optimizing this
+   // function.
+@@ -2988,7 +3012,13 @@
+       } else {
+         SafeToInline = M->hasAttr<DLLImportAttr>();
+       }
++
++	  // nvd
++#ifndef KA_DISABLE_INLINING
+       return SafeToInline;
++#else
++	  return false;
++#endif
+     }
+ 
+     bool VisitCXXDeleteExpr(CXXDeleteExpr *E) {
+Only in clang/lib/CodeGen: CodeGenModule.cpp.orig
+diff -ur clang-12.0.1.src/lib/Frontend/CompilerInvocation.cpp clang/lib/Frontend/CompilerInvocation.cpp
+--- clang-12.0.1.src/lib/Frontend/CompilerInvocation.cpp	2021-06-28 18:23:38.000000000 +0200
++++ clang/lib/Frontend/CompilerInvocation.cpp	2021-11-10 17:11:55.223799586 +0100
+@@ -97,6 +97,9 @@
+ #include <utility>
+ #include <vector>
+ 
++// patched by Navid Emamdoost
++#define KA_DISABLE_INLINING 1
++
+ using namespace clang;
+ using namespace driver;
+ using namespace options;
+@@ -974,9 +977,13 @@
+ 
+   // At O0 we want to fully disable inlining outside of cases marked with
+   // 'alwaysinline' that are required for correctness.
++#ifndef KA_DISABLE_INLINING
+   Opts.setInlining((Opts.OptimizationLevel == 0)
+                        ? CodeGenOptions::OnlyAlwaysInlining
+                        : CodeGenOptions::NormalInlining);
++#else
++  Opts.setInlining(CodeGenOptions::OnlyAlwaysInlining);
++#endif
+   // Explicit inlining flags can disable some or all inlining even at
+   // optimization levels above zero.
+   if (Arg *InlineArg = Args.getLastArg(
+@@ -2590,6 +2597,10 @@
+     if (InlineArg->getOption().matches(options::OPT_fno_inline))
+       Opts.NoInlineDefine = true;
+ 
++#ifdef KDA_DISABLE_INLINING
++  Opts.NoInlineDefine = true;
++#endif
++
+   if (Arg *A = Args.getLastArg(OPT_ffp_contract)) {
+     StringRef Val = A->getValue();
+     if (Val == "fast")

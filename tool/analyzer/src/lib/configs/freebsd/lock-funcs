@@ -1,0 +1,5 @@
+_mtx_trylock_flags_	unconditional,rw
+__mtx_lock_sleep	unconditional,rw
+__mtx_lock_flags	unconditional,rw
+__mtx_trylock_spin_flags	unconditional,rw
+__mtx_lock_spin_flags	unconditional,rw

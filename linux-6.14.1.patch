@@ -1,0 +1,80 @@
+diff -ur linux-6.14.1/arch/x86/include/asm/cpufeature.h linux-6.14.1-patched/arch/x86/include/asm/cpufeature.h
+--- linux-6.14.1/arch/x86/include/asm/cpufeature.h	2025-04-07 10:11:12.000000000 +0200
++++ linux-6.14.1-patched/arch/x86/include/asm/cpufeature.h	2025-06-04 21:07:39.649816129 +0200
+@@ -141,9 +141,9 @@
+  * is not relevant.
+  */
+ #define cpu_feature_enabled(bit)	\
+-	(__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : static_cpu_has(bit))
++	(__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : _static_cpu_has(bit))
+ 
+-#define boot_cpu_has(bit)	cpu_has(&boot_cpu_data, bit)
++#define boot_cpu_has(bit)	_static_cpu_has(bit)
+ 
+ #define set_cpu_cap(c, bit)	set_bit(bit, (unsigned long *)((c)->x86_capability))
+ 
+diff -ur linux-6.14.1/include/linux/bitfield.h linux-6.14.1-patched/include/linux/bitfield.h
+--- linux-6.14.1/include/linux/bitfield.h	2025-04-07 10:11:12.000000000 +0200
++++ linux-6.14.1-patched/include/linux/bitfield.h	2025-06-04 21:09:38.931506669 +0200
+@@ -156,14 +156,8 @@
+ 		(typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask));	\
+ 	})
+ 
+-extern void __compiletime_error("value doesn't fit into mask")
+-__field_overflow(void);
+-extern void __compiletime_error("bad bitfield mask")
+-__bad_mask(void);
+ static __always_inline u64 field_multiplier(u64 field)
+ {
+-	if ((field | (field - 1)) & ((field | (field - 1)) + 1))
+-		__bad_mask();
+ 	return field & -field;
+ }
+ static __always_inline u64 field_mask(u64 field)
+@@ -174,8 +168,6 @@
+ #define ____MAKE_OP(type,base,to,from)					\
+ static __always_inline __##type type##_encode_bits(base v, base field)	\
+ {									\
+-	if (__builtin_constant_p(v) && (v & ~field_mask(field)))	\
+-		__field_overflow();					\
+ 	return to((v & field_mask(field)) * field_multiplier(field));	\
+ }									\
+ static __always_inline __##type type##_replace_bits(__##type old,	\
+diff -ur linux-6.14.1/include/linux/compiler_types.h linux-6.14.1-patched/include/linux/compiler_types.h
+--- linux-6.14.1/include/linux/compiler_types.h	2025-04-07 10:11:12.000000000 +0200
++++ linux-6.14.1-patched/include/linux/compiler_types.h	2025-06-04 21:11:13.852260338 +0200
+@@ -509,22 +509,7 @@
+ 	(sizeof(t) == sizeof(char) || sizeof(t) == sizeof(short) || \
+ 	 sizeof(t) == sizeof(int) || sizeof(t) == sizeof(long))
+ 
+-#ifdef __OPTIMIZE__
+-# define __compiletime_assert(condition, msg, prefix, suffix)		\
+-	do {								\
+-		/*							\
+-		 * __noreturn is needed to give the compiler enough	\
+-		 * information to avoid certain possibly-uninitialized	\
+-		 * warnings (regardless of the build failing).		\
+-		 */							\
+-		__noreturn extern void prefix ## suffix(void)		\
+-			__compiletime_error(msg);			\
+-		if (!(condition))					\
+-			prefix ## suffix();				\
+-	} while (0)
+-#else
+ # define __compiletime_assert(condition, msg, prefix, suffix) do { } while (0)
+-#endif
+ 
+ #define _compiletime_assert(condition, msg, prefix, suffix) \
+ 	__compiletime_assert(condition, msg, prefix, suffix)
+diff -ur linux-6.14.1/scripts/min-tool-version.sh linux-6.14.1-patched/scripts/min-tool-version.sh
+--- linux-6.14.1/scripts/min-tool-version.sh	2025-04-07 10:11:12.000000000 +0200
++++ linux-6.14.1-patched/scripts/min-tool-version.sh	2025-06-04 21:11:27.532224833 +0200
+@@ -29,7 +29,7 @@
+ 	elif [ "$SRCARCH" = loongarch ]; then
+ 		echo 18.0.0
+ 	else
+-		echo 13.0.1
++		echo 12.0.1
+ 	fi
+ 	;;
+ rustc)

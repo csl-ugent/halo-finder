@@ -1,0 +1,15 @@
+kmalloc_array
+kvmalloc_array
+kmalloc_node
+kvmalloc_node
+kmalloc
+kmalloc_large
+kmalloc_order
+kmem_cache_alloc
+kmem_cache_alloc_node
+kmem_cache_zalloc
+__alloc_percpu
+__alloc_percpu_gfp
+new_slab
+devm_kmalloc
+devm_kmalloc_array

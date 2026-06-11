@@ -1,0 +1,3 @@
+__mtx_unlock_sleep
+__mtx_unlock_flags
+__mtx_unlock_spin_flags

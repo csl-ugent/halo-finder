@@ -1,0 +1,13 @@
+kfree
+kfree_sensitive
+kvfree
+free_percpu
+kfree_skb
+__kfree_skb
+kmem_cache_free
+kobject_del
+put_device
+kvfree_call_rcu
+snd_card_free
+free_netdev
+kref_put
