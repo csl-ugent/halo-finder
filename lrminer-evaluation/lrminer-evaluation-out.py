@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+import argparse
 import csv
 from collections import defaultdict
-import sys
 
 
-assert len(sys.argv) == 2
+parser = argparse.ArgumentParser()
+parser.add_argument('bugfile', help='LRMiner output file containing the data race reports (e.g. results-LRMiner/BugFile)')
+args = parser.parse_args()
 
 
 category_map = dict()
@@ -23,7 +25,7 @@ with open('export-lrminer.csv', 'r') as categorisation:
 
 #print(category_map)
 
-with open(sys.argv[1], 'r') as bugfile:
+with open(args.bugfile, 'r') as bugfile:
     state = 'search_start'
     current_location = ''
     current_field = ''
@@ -120,19 +122,19 @@ tp_count += counter['fp:safe']
 fp_count -= counter['fp:debug']
 tp_count += counter['fp:debug']
 fpr = 100 * fp_count / (fp_count + tp_count)
-print(f'FPR met fp:safe & fp:debug als probable: {fpr:.2f}%')
-print(f'\tTotaal aantal reports (excl unknowns): {fp_count+tp_count}')
-print(f'\tTotaal aantal reports (incl unknowns): {total_count}')
+print(f'FPR with fp:safe & fp:debug as probable: {fpr:.2f}%')
+print(f'\tTotal number of reports (excl unknowns): {fp_count+tp_count}')
+print(f'\tTotal number of reports (incl unknowns): {total_count}')
 
 tp_count += counter['unknown:sysfs']
 tp_count += counter['unknown:procfs']
 fpr = 100 * fp_count / (fp_count + tp_count)
-print(f'FPR met fp:safe & fp:debug & unknown:sysfs & unknown:procfs als probable: {fpr:.2f}%')
-print(f'\tTotaal aantal reports (excl unknowns): {fp_count+tp_count}')
-print(f'\tTotaal aantal reports (incl unknowns): {total_count}')
+print(f'FPR with fp:safe & fp:debug & unknown:sysfs & unknown:procfs as probable: {fpr:.2f}%')
+print(f'\tTotal number of reports (excl unknowns): {fp_count+tp_count}')
+print(f'\tTotal number of reports (incl unknowns): {total_count}')
 
 fp_count -= counter['fp:cleanup']
 fp_count -= counter['fp:init']
 fp_count -= counter['fp:tool-bug']
 fpr = 100 * fp_count / (fp_count + tp_count)
-print(f'FPR met fp:safe & fp:debug & unknown:sysfs & unknown:procfs als probable & geen fp:init & fp:cleanup & fp:tool-bug: {fpr:.2f}%')
+print(f'FPR with fp:safe & fp:debug & unknown:sysfs & unknown:procfs as probable & no fp:init & fp:cleanup & fp:tool-bug: {fpr:.2f}%')
