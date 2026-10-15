@@ -21,8 +21,8 @@ tar xvf linux-5.14.11.tar
 
 4. Patch kernel sources
 
-For Linux 5.14.11, we provide a single patch file to patch the kernel at `linux/linux-5.14.11.patch`.
-For Linux 6.1.x, which we used for porting CVEs, we provide several patch files depending on the specific version you check out at `linux/6.1/6.1-patch-*`.
+    For Linux 5.14.11, we provide a single patch file to patch the kernel at `linux/linux-5.14.11.patch`.
+    For Linux 6.1.x, which we used for porting CVEs, we provide several patch files depending on the specific version you check out at `linux/6.1/6.1-patch-*`.
 
 5. For Linux 6.x: Patch scripts/min-tool-version.sh to allow clang-12
 
