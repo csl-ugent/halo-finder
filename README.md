@@ -37,16 +37,16 @@ This will then be mounted and used for the actual compilation.
 
 Actual build (inside root directory):
 ```sh
-$ docker run --mount src=`pwd`,target=/linux,type=bind --mount src='/home/ndossche/thesis/crix/llvm/llvm-project/prefix-llvm-12',target=/llvm,type=bind -t -i --rm linux-kernel-llvm bash
-$ cd linux
-$ export LLVM_COMPILER_PATH=/llvm/bin
-$ make LLVM=1 CC=wllvm -j$(nproc)
-$ extract-bc vmlinux
+docker run --mount src=`pwd`,target=/linux,type=bind --mount src='/home/ndossche/thesis/crix/llvm/llvm-project/prefix-llvm-12',target=/llvm,type=bind -t -i --rm linux-kernel-llvm bash
+cd linux
+export LLVM_COMPILER_PATH=/llvm/bin
+make LLVM=1 CC=wllvm -j$(nproc)
+extract-bc vmlinux
 ```
 
 ### Testing fix commits
 
-To repeat the Linux 6.1 CVE experiment, you can use the `linux/6.1/build-a-kernel-with-docker-6.1.sh` shell script that will perform the necessary steps. It has embedded documentation at the top of the file.
+To repeat the Linux 6.1 CVE experiment, you can use the `linux/6.1/build-a-kernel-with-docker-6.1.sh` shell script that will perform the necessary build and git checkout steps. It has embedded documentation at the top of the file.
 
 ## Building and Running HaLo
 
@@ -55,23 +55,23 @@ To repeat the Linux 6.1 CVE experiment, you can use the `linux/6.1/build-a-kerne
 It requires a build of LLVM 14.0.6:
 
 ```sh
-$ cd tool/llvm
-$ ./fetch-llvm.sh
-$ ./build-llvm.sh
+cd tool/llvm
+./fetch-llvm.sh
+./build-llvm.sh
 ```
 
 ### Building HaLo
 
 ```sh
-$ cd tool/analyzer
-$ make -j$(nproc)
+cd tool/analyzer
+make -j$(nproc)
 ```
 
 ### Running HaLo
 
 ```sh
-$ cd tool
-$ ./analyzer/build/lib/kanalyzer -t 0.1667 -c 1 -ignore-volatile path_to_vmlinux.bc &> output_filename
+cd tool
+./analyzer/build/lib/kanalyzer -t 0.1667 -c 1 -ignore-volatile path_to_vmlinux.bc &> output_filename
 ```
 
 ### Evaluation
