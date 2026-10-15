@@ -33,9 +33,9 @@ void dumpDebugValue(const Function* function) {
 
 const MDNode* findDebugValue(const Type* type, const Function* function) {
     for (const auto& instruction : instructions(function)) {
-        if (auto dbg = dyn_cast<DbgDeclareInst>(&instruction); dbg && dbg->getAddress()->getType() == type) {
+        if (auto dbg = dyn_cast<DbgDeclareInst>(&instruction); dbg && dbg->getAddress() && dbg->getAddress()->getType() == type) {
             return dbg->getVariable();
-        } else if (auto dbg = dyn_cast<DbgValueInst>(&instruction); dbg && dbg->getValue()->getType() == type) {
+        } else if (auto dbg = dyn_cast<DbgValueInst>(&instruction); dbg && dbg->getValue() && dbg->getValue()->getType() == type) {
             return dbg->getVariable();
         }
     }

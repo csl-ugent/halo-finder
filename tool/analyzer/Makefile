@@ -13,17 +13,16 @@ endif
 
 build_analyzer_func = \
 	(mkdir -p ${2} \
-		&& cd ${2} \
-		&& PATH=${LLVM_BUILD}/bin:${PATH} \
+		&& cd ${2} && \
 			LLVM_TOOLS_BINARY_DIR=${LLVM_BUILD}/bin \
 			LLVM_LIBRARY_DIRS=${LLVM_BUILD}/lib \
 			LLVM_INCLUDE_DIRS=${LLVM_BUILD}/include \
-			CC=gcc CXX=g++ \
+			CC=clang CXX=clang++ \
 			cmake ${1}	\
 				-DCMAKE_BUILD_TYPE=Release \
 				-DLLVM_ENABLE_ASSERTIONS=OFF \
 				-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-				-DCMAKE_CXX_FLAGS_RELEASE="-std=c++20 -Wno-unqualified-std-cast-call -fno-rtti -g -O3 -march=native -fpic -Wall -Wextra -Wno-unused-parameter -Wl,--build-id -Wno-unused-command-line-argument" \
+				-DCMAKE_CXX_FLAGS_RELEASE="-std=c++20 -gdwarf-4 -fno-rtti -g -O3 -march=native -fpic -Wall -Wextra -Wno-unused-parameter -Wl,--build-id -Wno-unused-command-line-argument" \
 		&& make -j${NPROC})
 
 all: kanalyzer

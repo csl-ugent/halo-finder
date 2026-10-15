@@ -122,13 +122,10 @@ void WrapperFinder::findEventualCallers(set<const Function*>& destinationSet, un
     for (const auto& [f, _]: source) {
         destinationSet.insert(f);
 
-	auto it = Ctx->Callers.find(const_cast<Function*>(f));
-	if (it != Ctx->Callers.end()) {
-            for (const auto& caller: it->second) {
-                auto function = caller->getFunction();
-                functionCheckStack.push(function);
-            }
-	}
+        for (const auto& caller: Ctx->Callers[const_cast<Function*>(f)]) {
+            auto function = caller->getFunction();
+            functionCheckStack.push(function);
+        }
     }
     set<const Function*> visitedFunctions;
     while (!functionCheckStack.empty()) {

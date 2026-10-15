@@ -1,0 +1,12 @@
+diff --git a/include/linux/swapops.h b/include/linux/swapops.h
+index b07b277d6a16..caf578a95421 100644
+--- a/include/linux/swapops.h
++++ b/include/linux/swapops.h
+@@ -555,6 +555,7 @@ static inline int set_pmd_migration_entry(struct page_vma_mapped_walk *pvmw,
+ 		struct page *page)
+ {
+ 	BUILD_BUG();
++	return 0;
+ }
+ 
+ static inline void remove_migration_pmd(struct page_vma_mapped_walk *pvmw,

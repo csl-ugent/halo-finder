@@ -5,35 +5,30 @@
 1. Download & extract a recent kernel release from https://kernel.org
 
 ```sh
-$ wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.1.tar.xz
-$ tar xf linux-6.14.1.tar.xz
+wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.11.tar.xz
+xz –d -v linux-5.14.11.tar.xz
+tar xvf linux-5.14.11.tar
 ```
 
 2. Copy the `.config` file (attached) to the root of the extracted directory
 
-3. Modify.config: CONFIG_CC_HAS_ASM_GOTO, CONFIG_CC_HAS_ASM_GOTO_OUTPUT, and CONFIG_JUMP_LABEL to n (if listed), as the compilation process tends to reset this.
+3. The Linux 5.14.11 config is in `linux/config-5.14.11`.
+
+    Configuration can be adapted with: `make menuconfig`.
+    Override `CONFIG_CC_HAS_ASM_GOTO` to `n` and `JUMP_LABEL` to `n` in `.config` manually.
+    Make sure to set KVM -Werror to false as the instrumentation of the error codes causes warnings.
+    If you encounter the error "FAILED elf_update(WRITE): no error", set `CONFIG_DEBUG_INFO_BTF=n`.
 
 4. Patch kernel sources
 
-Update `arch/x86/include/asm/cpufeature.h` to use the `static_cpu_has` variant inside `boot_cpu_has`.
-Update `include/linux/compiler_types.h` to use the empty variant of the `__compiletime_assert` macro.
-Update `include/linux/bitfield.h` to get rid of `__field_overflow` and `__bad_mask`.
+For Linux 5.14.11, we provide a single patch file to patch the kernel at `linux/linux-5.14.11.patch`.
+For Linux 6.1.x, which we used for porting CVEs, we provide several patch files depending on the specific version you check out at `linux/6.1/6.1-patch-*`.
 
-5. Patch scripts/min-tool-version.sh to allow clang-12
+5. For Linux 6.x: Patch scripts/min-tool-version.sh to allow clang-12
 
 ### Prepare Build Environment
 
-Use a docker image based on the following Dockerfile:
-```
-FROM ubuntu:rolling
-ENV DEBIAN_FRONTEND noninteractive
-ENV LLVM_COMPILER clang
-RUN apt-get update && apt-get install -y clang-12 python3 llvm-12 lld-12 make libelf-dev bc bison texinfo libssl-dev flex file wget dwarves python3-pip cpio
-RUN for f in /bin/llvm-*; do ln -s "$f" "$(echo $f | sed 's/-12$//')" ; done;
-RUN ln -s /bin/clang-12 /bin/clang
-RUN ln -s /bin/ld.lld-12 /bin/ld.lld
-RUN pip install wllvm --break-system-packages
-```
+You must use a docker container build from the image at `linux/Dockerfile`.
 
 It's also necessary to build a custom clang build with the patch from the `disable-inline` directory applied.
 This will then be mounted and used for the actual compilation.
@@ -48,6 +43,10 @@ $ export LLVM_COMPILER_PATH=/llvm/bin
 $ make LLVM=1 CC=wllvm -j$(nproc)
 $ extract-bc vmlinux
 ```
+
+### Testing fix commits
+
+To repeat the Linux 6.1 CVE experiment, you can use the `linux/6.1/build-a-kernel-with-docker-6.1.sh` shell script that will perform the necessary steps. It has embedded documentation at the top of the file.
 
 ## Building and Running HaLo
 

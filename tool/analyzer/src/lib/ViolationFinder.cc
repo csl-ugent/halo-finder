@@ -92,10 +92,11 @@ shared_ptr<Field> ViolationFinder::findCoreLock(const shared_ptr<Field>& field) 
     return ret;
 }
 
-pair<const LockCover*, unsigned int> getMaxLockCoverCoveredCount(const LockCovers& lockCovers) {
+pair<const LockCover*, unsigned int> getMaxLockCoverCoveredCount(const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>& lockCovers) {
     size_t coveredCount = 0;
     const LockCover* maxCover = nullptr;
-    for (const auto& [cover, localCount]: lockCovers) {
+    for (const auto& cover: lockCovers) {
+        size_t localCount = lockCovers.count(cover);
         if (localCount > coveredCount) {
             maxCover = &cover;
             coveredCount = localCount;
@@ -130,15 +131,15 @@ void ViolationFinder::fillFunctionToSyscallMap(const Function* syscall, const Fu
     }
 }
 
-void ViolationFinder::fillFunctionToSyscallMap(const vector<Function *> &functions) {
-    for (const auto* function: functions) {
-        if (function->isDeclaration() || !function->getName().startswith_insensitive(SyscallNamePrefix))
+void ViolationFinder::fillFunctionToSyscallMap(const Module& M) {
+    for (const auto& function: M) {
+        if (function.isDeclaration() || !function.getName().startswith_insensitive(SyscallNamePrefix))
             continue;
 
-        LOG(LOG_INFO, "Syscall: " << function->getName() << "\n");
+        LOG(LOG_INFO, "Syscall: " << function.getName() << "\n");
 
         set<const Function*> visited;
-        fillFunctionToSyscallMap(function, function, visited, SYSCALL_DISCOVERY_MAX_DEPTH);
+        fillFunctionToSyscallMap(&function, &function, visited, SYSCALL_DISCOVERY_MAX_DEPTH);
     }
 }
 
@@ -393,16 +394,16 @@ ViolationFinder::calculateInitializationValuesIndividual(const Function* functio
     }
 }
 
-void ViolationFinder::calculateInitializationValues(const vector<Function *> &functions) {
+void ViolationFinder::calculateInitializationValues(const Module& M) {
     ThreadPool threadPool(hardware_concurrency(ThreadCount));
     mutex initializationValuesMutex, finalizationValuesMutex;
 
     // Calculate the operands that lead back to an object that's initialized (by checking initialization on their locks)
-    for (const auto* function: functions) {
-        if (GlobalCtx.shouldSkipFunction(function))
+    for (const auto& function: M) {
+        if (GlobalCtx.shouldSkipFunction(&function))
             continue;
 
-        threadPool.async(&ViolationFinder::calculateInitializationValuesIndividual, this, function,
+        threadPool.async(&ViolationFinder::calculateInitializationValuesIndividual, this, &function,
                          &initializationValuesMutex, &finalizationValuesMutex);
     }
 
@@ -516,7 +517,7 @@ void ViolationFinder::findViolationsInFunction(const Function* function) {
                     LOG(LOG_INFO, "Field in: " << function->getName() << "\n");
                     field->dump(LOG_INFO);
                     auto it = lockCoverageMap.find(BB);
-                    for (const auto& [cover, _]: coverageData.lockCovers) {
+                    for (const auto& cover: coverageData.lockCovers) {
                         LOG(LOG_INFO, "  needs: ");
                         cover.field->dump(LOG_INFO);
                         LockCoverHash h;
@@ -526,7 +527,7 @@ void ViolationFinder::findViolationsInFunction(const Function* function) {
                         }
                     }
                     if (it != lockCoverageMap.end()) {
-                        for (const auto& [cover, _]: it->second) {
+                        for (const auto& cover: it->second) {
                             LOG(LOG_INFO, "  has: ");
                             cover.field->dump(LOG_INFO);
                             LockCoverHash h;
@@ -739,7 +740,7 @@ static bool isLockCoverBroaderApplicable(const LockCover& currentBest, const Loc
  * @return
  */
 static const LockCover*
-findClosestCoverForField(const Field& accessedField, const LockCovers& coverSet) {
+findClosestCoverForField(const Field& accessedField, const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>& coverSet) {
     int bestScore = 99999;
     const LockCover* bestCover = nullptr;
     bool first = true;
@@ -747,13 +748,13 @@ findClosestCoverForField(const Field& accessedField, const LockCovers& coverSet)
     bool debug = false; //accessedField.type->getStructName().contains("controller");
     if (debug) {
         LOG(LOG_INFO, "All covers available " << coverSet.size() << ":\n");
-        for (const auto& [cover, _]: coverSet) {
+        for (const auto& cover: coverSet) {
             LOG(LOG_INFO, "\t");
             cover.field->dump(LOG_INFO);
             LOG(LOG_INFO, "\tDepth: " << cover.field->depth() << "\n");
         }
     }
-    for (const auto& [cover, _]: coverSet) {
+    for (const auto& cover: coverSet) {
         auto coverFieldDepth = cover.field->depth();
 
         // d(lock) <= d(field) because the field must be deeper or at equal depth in order to be able to be protected by the lock
@@ -993,10 +994,10 @@ void ViolationFinder::findPotentialRulesIndividual(const Function* function, Rea
                         continue;
                     }
 
-                    LockCovers applicableLockCoversForCurrentBBAndField;
+                    unordered_multiset <LockCover, LockCoverHash, LockCoverEqual> applicableLockCoversForCurrentBBAndField;
 
                     bool mustBelief = false;
-                    for (const auto &[cover, _]: covers) {
+                    for (const auto &cover: covers) {
                         // If the cover can protect the field
                         if (cover.field->embeddedPtr() == fieldCandidate.potentialCompareType() ||
                             canCoverField(*cover.field, *field)) {
@@ -1009,12 +1010,12 @@ void ViolationFinder::findPotentialRulesIndividual(const Function* function, Rea
                             bool addedSomething = false;
                             for (const auto* user: instruction.users()) {
                                 if (!isa<DbgDeclareInst>(user) && !isa<DbgValueInst>(user)) {
-                                    applicableLockCoversForCurrentBBAndField[cover]++;
+                                    applicableLockCoversForCurrentBBAndField.insert(cover);
                                     addedSomething = true;
                                 }
                             }
                             if (!addedSomething)
-                                applicableLockCoversForCurrentBBAndField[cover]++;
+                                applicableLockCoversForCurrentBBAndField.insert(cover);
 
                             if (!mustBelief && field->depth() == length) {
                                 auto nextInstruction = instruction.getNextNonDebugInstruction(true);
@@ -1040,7 +1041,7 @@ void ViolationFinder::findPotentialRulesIndividual(const Function* function, Rea
                     auto updateFieldLockPreferences = [&] {
                         if (auto it = fieldLockPreference.find(field); it == fieldLockPreference.end()) {
                             auto& set = fieldLockPreference[field];
-                            for (const auto& [entry, _] : applicableLockCoversForCurrentBBAndField) {
+                            for (const auto& entry : applicableLockCoversForCurrentBBAndField) {
                                 /*if (entry.originLockCall->getFunction() == function) */{
                                     set.insert(entry.field);
                                 }
@@ -1049,8 +1050,8 @@ void ViolationFinder::findPotentialRulesIndividual(const Function* function, Rea
                             auto& set = it->second;
                             auto entryIt = set.begin();
                             while (entryIt != set.end()) {
-                                if (!any_of(applicableLockCoversForCurrentBBAndField, [&](const auto& cover) {
-                                    return cover.first.field->operator==(*entryIt->get());
+                                if (!any_of(applicableLockCoversForCurrentBBAndField, [&](const LockCover& cover) {
+                                    return cover.field->operator==(**entryIt);
                                 })) {
                                     entryIt = set.erase(entryIt);
                                 } else {
@@ -1163,16 +1164,16 @@ const SourceLocation& getSourceLocationMemoized(const Instruction* ins) {
     }
 }
 
-void ViolationFinder::findPotentialRules(const vector<Function *> &functions) {
+void ViolationFinder::findPotentialRules(const Module& M) {
     ReadWriteViolationCoverToInstructionsMap readWriteViolationCoverToInstructions;
     mutex readWriteViolationCoverToInstructionsMutex, privateVarMutex;
 
     ThreadPool threadPool(hardware_concurrency(ThreadCount));
-    for (const auto *function : functions) {
-        if (GlobalCtx.shouldSkipFunction(function))
+    for (const auto& function : M) {
+        if (GlobalCtx.shouldSkipFunction(&function))
             continue;
 
-        threadPool.async(&ViolationFinder::findPotentialRulesIndividual, this, function, &readWriteViolationCoverToInstructions, &readWriteViolationCoverToInstructionsMutex, &privateVarMutex);
+        threadPool.async(&ViolationFinder::findPotentialRulesIndividual, this, &function, &readWriteViolationCoverToInstructions, &readWriteViolationCoverToInstructionsMutex, &privateVarMutex);
     }
     threadPool.wait();
 
@@ -1194,7 +1195,7 @@ void ViolationFinder::findPotentialRules(const vector<Function *> &functions) {
         auto& set = fieldCoverageDataIt->second.lockCovers;
         auto setIt = set.begin();
         while (setIt != set.end()) {
-            if (preferences.find(setIt->first.field) == preferences.end())
+            if (preferences.find(setIt->field) == preferences.end())
                 setIt = set.erase(setIt);
             else
                 ++setIt;
@@ -1244,6 +1245,7 @@ void ViolationFinder::findPotentialRules(const vector<Function *> &functions) {
             if (totalIt == GlobalCtx.Callers.end())
                 continue;
 
+            // TODO: enkel degene tellen waar je een field van kan krijgen? (vgl dat eens)
             auto total = totalIt->second.size();
             auto ratio = ratioFrom(lockedCount, total - lockedCount);
 #if 0
@@ -1316,9 +1318,8 @@ void ViolationFinder::findPotentialRules(const vector<Function *> &functions) {
     }
 }
 
-void ViolationFinder::dumpStoreAndCallsTest(const vector<Function *> &functions) const {
-    for (const auto *FPtr : functions) {
-		const auto &F = *FPtr;
+void ViolationFinder::dumpStoreAndCallsTest(const Module& M) const {
+    for (const auto& F : M) {
         if (!F.getName().contains("btrfs_free_block_groups"/*"hci_alloc_dev"*/)) continue;
 
         for (const auto& I : instructions(F)) {
@@ -1330,7 +1331,7 @@ void ViolationFinder::dumpStoreAndCallsTest(const vector<Function *> &functions)
                     operand->dump();
                     FieldSourceSet sourceSet;
                     set<const Value*> trackedSet;
-                    findFields(*F.getParent(), operand, sourceSet, trackedSet, false);
+                    findFields(M, operand, sourceSet, trackedSet, false);
 
                     for (const auto& source : sourceSet) {
                         source.fieldPtr()->dump(LOG_INFO);
@@ -1346,18 +1347,18 @@ void ViolationFinder::dumpStoreAndCallsTest(const vector<Function *> &functions)
     exit(1);
 }
 
-void ViolationFinder::findViolations(const vector<Function *> &functions) {
+void ViolationFinder::findViolations(const Module& M) {
     LOG(LOG_INFO, "Calculating potential rules\n");
-    findPotentialRules(functions);
+    findPotentialRules(M);
 
     LOG(LOG_INFO, "Calculating violations in functions\n");
 
     ThreadPool threadPool(hardware_concurrency(ThreadCount));
-    for (const auto* function: functions) {
-        if (GlobalCtx.shouldSkipFunction(function))
+    for (const auto& function: M) {
+        if (GlobalCtx.shouldSkipFunction(&function))
             continue;
 
-        threadPool.async(&ViolationFinder::findViolationsInFunction, this, function);
+        threadPool.async(&ViolationFinder::findViolationsInFunction, this, &function);
     }
     threadPool.wait();
 
@@ -1412,7 +1413,7 @@ static void printPaths(raw_string_ostream& output, const vector<const Instructio
 optional<float> ViolationFinder::earlyRejectField(
         unsigned long uncoveredCount,
         const shared_ptr<Field>& field,
-        const LockCovers* lockCovers) const {
+        const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>* lockCovers) const {
     auto& last = field->last();
 #if 0
     if (auto it = storeCounter.find(last); it != storeCounter.end()) {
@@ -1454,7 +1455,7 @@ optional<float> ViolationFinder::earlyRejectField(
 void ViolationFinder::showFieldBugsIndividual(mutex* outputMutex,
                                               unsigned long uncoveredCount,
                                               const shared_ptr<Field>& field,
-                                              const LockCovers* lockCovers) const {
+                                              const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>* lockCovers) const {
     auto fractionOptional = earlyRejectField(uncoveredCount, field, lockCovers);
     if (!fractionOptional.has_value())
         return;
@@ -1555,7 +1556,7 @@ void ViolationFinder::showFieldBugsIndividual(mutex* outputMutex,
     string outputString;
     raw_string_ostream output(outputString);
     field->dumpToStringStream(output);
-    for (const auto& [cover, _]: *lockCovers) {
+    for (const auto& cover: *lockCovers) {
         output << "\tCover: ";
         cover.field->dumpToStringStream(output);
 #if 0
@@ -1684,7 +1685,7 @@ void ViolationFinder::showAssertionBugsIndividual(const shared_ptr<Field>* field
     outputMutex->unlock();
 }
 
-void ViolationFinder::showAssertionBugs(const vector<Function *> &functions) const {
+void ViolationFinder::showAssertionBugs(const Module& M) const {
     // Maps lock -> path where the lock should be held but is not held.
     ViolationPathMap violationPaths;
 
@@ -1788,7 +1789,7 @@ void ViolationFinder::showLockingRules() const {
             continue;
         field->dump(LOG_INFO);
         LOG(LOG_INFO, "\tLocked by:\n");
-        for (const auto& [cover, _]: lockCovers) {
+        for (const auto& cover: lockCovers) {
             LOG(LOG_INFO, "\t\t");
             cover.field->dump(LOG_INFO);
 #if 0

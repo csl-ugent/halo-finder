@@ -15,8 +15,8 @@
 #include "llvm/IRReader/IRReader.h"
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Support/Signals.h"
-#include <llvm/Support/ThreadPool.h>
 
+#include <malloc.h>
 #include "Analyzer.h"
 #include "CallGraph.h"
 #include "PointerAnalysis.h"
@@ -253,26 +253,7 @@ void LoadStaticData(GlobalContext *GCtx) {
 	SetCopyFuncs(GCtx->CopyFuncs);
 }
 
-void loadModule(const char* argv[], unsigned i, mutex* modulesVectorMutex) {
-	SMDiagnostic Err;
-	auto LLVMCtx = new LLVMContext();
-	unique_ptr<Module> M = parseIRFile(InputFilenames[i], Err, *LLVMCtx);
-
-	if (!M) {
-		OP << argv[0] << ": error loading file '" << InputFilenames[i] << "': " << Err.getMessage() << "\n";
-		return;
-	}
-
-	Module *Module = M.release();
-#if 0
-	OP << "Amount of instructions in " << InputFilenames[i] << ": " << Module->getInstructionCount() << "\n";
-#endif
-	StringRef MName(strdup(InputFilenames[i].data()));
-	lock_guard _(*modulesVectorMutex);
-	GlobalCtx.Modules.push_back(make_pair(Module, MName));
-}
-
-int main(int argc, const char *argv[]) {
+int main(int argc, char **argv) {
 
 	const auto time_start{std::chrono::steady_clock::now()};
 
@@ -286,16 +267,29 @@ int main(int argc, const char *argv[]) {
 	SMDiagnostic Err;
 
 	// Loading modules
-	mutex modulesVectorMutex;
-	ThreadPool loadPool;
+	OP << "Total " << InputFilenames.size() << " file(s)\n";
+
 	for (unsigned i = 0; i < InputFilenames.size(); ++i) {
-		loadPool.async(&loadModule, argv, i, &modulesVectorMutex);
+
+		auto LLVMCtx = new LLVMContext();
+		unique_ptr<Module> M = parseIRFile(InputFilenames[i], Err, *LLVMCtx);
+
+		if (!M) {
+			OP << argv[0] << ": error loading file '"
+				<< InputFilenames[i] << "'\n";
+			continue;
+		}
+
+		Module *Module = M.release();
+        OP << "Amount of instructions in " << InputFilenames[i] << ": " << Module->getInstructionCount() << "\n";
+		StringRef MName(strdup(InputFilenames[i].data()));
+		GlobalCtx.Modules.push_back(make_pair(Module, MName));
 	}
-	loadPool.wait();
 
 	// Main workflow
+	//malloc_info(0, stderr);
+	std::cout<<mallinfo2().uordblks<<" bytes in use\n";
 	LoadStaticData(&GlobalCtx);
-
 #if 0
     PointerAnalysisPass PPass(&GlobalCtx);
     PPass.run(GlobalCtx.Modules);
@@ -318,20 +312,13 @@ int main(int argc, const char *argv[]) {
 	CGPass.run(GlobalCtx.Modules);
 
 	LockCheckerPass LPass(&GlobalCtx);
-	{
-		vector<Function *> functions;
-		for (auto &[M, _] : GlobalCtx.Modules) {
-			for (auto &F : *M) {
-				functions.push_back(&F);
-			}
-		}
-		LPass.doInitialization(functions);
-		LPass.run(functions);
-	}
+	LPass.run(GlobalCtx.Modules);
 
+	//malloc_info(0, stderr);
+	std::cout<<mallinfo2().uordblks<<" bytes in use\n";
 	const auto time_end{std::chrono::steady_clock::now()};
 	const std::chrono::duration<double> elapsed_seconds{time_end - time_start};
-	std::cout << "Elapsed seconds: " << std::chrono::duration_cast<std::chrono::seconds>(elapsed_seconds).count() << "s\n";
+	std::cout << "Elapsed seconds: " << elapsed_seconds.count() << "\n";
 
 	return 0;
 }

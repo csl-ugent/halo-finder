@@ -49,7 +49,7 @@ static void loadFunctions(const string& file, const T& cb) {
     }
 }
 
-static void loadFunctionsWithCallback(const vector<Function *> &functions, const string& file,
+static void loadFunctionsWithCallback(const Module& M, const string& file,
                                       const function<void(const Function&, optional<string_view>)>& callback,
                                       bool allowFunctionsWithoutArgument) {
     loadFunctions(file, [&](const string_view& data) {
@@ -65,8 +65,7 @@ static void loadFunctionsWithCallback(const vector<Function *> &functions, const
         auto nameLength = name.size();
 
         bool inserted = false;
-        for (const auto *funcPtr: functions) {
-			const auto &func = *funcPtr;
+        for (const auto& func: M) {
             if (!allowFunctionsWithoutArgument && func.getFunctionType()->getNumParams() == 0)
                 continue;
             //if (GlobalCtx.UnifiedFuncSet.find(const_cast<Function*>(&func)) == GlobalCtx.UnifiedFuncSet.end())
@@ -86,8 +85,8 @@ static void loadFunctionsWithCallback(const vector<Function *> &functions, const
 }
 
 static void
-loadFunctionsIntoMap(const vector<Function *> &functions, const string& file, unordered_map<const Function*, LockUnlockerData>& map, unordered_set<const Type*>& lockTypes) {
-    loadFunctionsWithCallback(functions, file, [&](const Function& func, optional<string_view> additionalData) {
+loadFunctionsIntoMap(const Module& M, const string& file, unordered_map<const Function*, LockUnlockerData>& map, unordered_set<const Type*>& lockTypes) {
+    loadFunctionsWithCallback(M, file, [&](const Function& func, optional<string_view> additionalData) {
         auto lockAcquisitionStyle = LockAcquisitionStyle::Unconditional;
         auto lockAccessStyle = LockAccessStyle::ReadWrite;
         if (additionalData.has_value()) {
@@ -129,12 +128,17 @@ loadFunctionsIntoMap(const vector<Function *> &functions, const string& file, un
     }, false);
 }
 
-void LockCheckerPass::doInitialization(const vector<Function *> &functions) {
+bool LockCheckerPass::doInitialization(Module* M) {
     LOG(LOG_INFO, "Reading function lists\n");
-    loadFunctionsIntoMap(functions, "lock-funcs", lockers, lockTypes);
-    loadFunctionsIntoMap(functions, "unlock-funcs", unlockers, lockTypes);
-    loadTransformers(functions);
-    loadSimpleFunctionLists(functions);
+    loadFunctionsIntoMap(*M, "lock-funcs", lockers, lockTypes);
+    loadFunctionsIntoMap(*M, "unlock-funcs", unlockers, lockTypes);
+    loadTransformers(*M);
+    loadSimpleFunctionLists(*M);
+    return false;
+}
+
+bool LockCheckerPass::doFinalization(Module* M) {
+    return false;
 }
 
 bool LockCheckerPass::isFunctionALocker(const Function& function) const {
@@ -240,8 +244,9 @@ void LockCheckerPass::handleFunctionForLockAndUnLockFields(Function& function) {
     }
 }
 
-void LockCheckerPass::findLockAndUnLockFields(const vector<Function *> &functions) {
-    for (auto *function : functions) {
+void LockCheckerPass::findLockAndUnLockFields(Module* M) {
+    for (auto& funcIt: *M) {
+        Function* function = &funcIt;
         if (Ctx->shouldSkipFunction(function))
             continue;
 
@@ -506,7 +511,7 @@ loopOverAllLockCoversOf(LockCover lockCover, const unordered_set<const Type*>& l
 #endif
 }
 
-void LockCheckerPass::findBasicBlockCoverage(const vector<Function *> &functions, LockCoverageMap& lockCoverage) {
+void LockCheckerPass::findBasicBlockCoverage(Module* M, LockCoverageMap& lockCoverage) {
     // Split the basic blocks such that locking calls and unlocking calls always are the first instruction of the block.
     // This way we can just mark basic blocks instead of marking individual instructions.
     auto performSplits = [&](decltype(LockFields)& map) {
@@ -531,9 +536,9 @@ void LockCheckerPass::findBasicBlockCoverage(const vector<Function *> &functions
     auto insertIntoCoverage = [&lockCoverage, &alreadyAdded](const BasicBlock* BB, const LockCover& lockCover) {
         auto it = lockCoverage.find(BB);
         if (it != lockCoverage.end()) {
-            it->second[lockCover]++;
+            it->second.emplace(lockCover);
         } else {
-            lockCoverage[BB][lockCover] = 1;
+            lockCoverage.insert({BB, {lockCover}});
         }
         alreadyAdded.emplace(make_pair(BB, lockCover));
     };
@@ -608,7 +613,8 @@ void LockCheckerPass::findBasicBlockCoverage(const vector<Function *> &functions
         int i = 0;
         do {
             changed = 0;
-            for (auto *function: functions) {
+            for (auto& funcIt: *M) {
+                Function* function = &funcIt;
                 if (Ctx->shouldSkipFunction(function))
                     continue;
 
@@ -639,10 +645,7 @@ void LockCheckerPass::findBasicBlockCoverage(const vector<Function *> &functions
 #endif
 
                     if (first) {
-                        // ??? lockCoversIntersection.reserve()
-                        for (const auto &[cover, _] : callingCovers) {
-                            lockCoversIntersection.insert(cover);
-                        }
+                        lockCoversIntersection.insert(callingCovers.begin(), callingCovers.end());
                         first = false;
                     } else {
                         for (auto it = lockCoversIntersection.begin(); it != lockCoversIntersection.end();) {
@@ -671,7 +674,7 @@ void LockCheckerPass::findBasicBlockCoverage(const vector<Function *> &functions
                             auto& currentCovers = lockCoverage[&BB];
 
                             for (decltype(count) addCounter = 0; addCounter < count; ++addCounter)
-                                currentCovers[cover]++;
+                                currentCovers.insert(cover);
                             ++changed;
                         }
                     }
@@ -710,22 +713,22 @@ void LockCheckerPass::findBasicBlockCoverage(const vector<Function *> &functions
 #endif
 }
 
-void LockCheckerPass::findViolations(const vector<Function *> &functions) {
+void LockCheckerPass::findViolations(Module* M) {
     LOG(LOG_INFO, "Computing coverage\n");
     LockCoverageMap lockCoverage;
-    findBasicBlockCoverage(functions, lockCoverage);
+    findBasicBlockCoverage(M, lockCoverage);
 
     LockCheckerPassData lockCheckerPassData(*this);
     ViolationFinder violationFinder(lockCheckerPassData, lockCoverage, allocFunctions, freeFunctions);
     if (FilterInitAndCleanup)
-        violationFinder.calculateInitializationValues(functions);
+        violationFinder.calculateInitializationValues(*M);
 #ifdef PRINT_SYSCALL_IF_THERE_ARE
-    violationFinder.fillFunctionToSyscallMap(functions);
+    violationFinder.fillFunctionToSyscallMap(*M);
 #endif
 #ifdef DUMP_STORE_CALL_TEST
-    violationFinder.dumpStoreAndCallsTest(functions);
+    violationFinder.dumpStoreAndCallsTest(*M);
 #endif
-    violationFinder.findViolations(functions);
+    violationFinder.findViolations(*M);
 
     if (DumpLockingCounts) {
         violationFinder.showLockingRules();
@@ -733,22 +736,22 @@ void LockCheckerPass::findViolations(const vector<Function *> &functions) {
 
     if (DetectLockAssertionViolations) {
         LOG(LOG_INFO, "================ Assertion bugs ================\n");
-        violationFinder.showAssertionBugs(functions);
+        violationFinder.showAssertionBugs(*M);
     }
     LOG(LOG_INFO, "================   Field bugs   ================\n");
     violationFinder.deriveContexts();
     violationFinder.showFieldBugs();
 }
 
-void LockCheckerPass::loadTransformers(const vector<Function *> &functions) {
+void LockCheckerPass::loadTransformers(const Module& M) {
     // Functions that don't take or release locks but just transform the lock in one way or another and typically perform checks.
-    loadFunctionsWithCallback(functions, "lock-check-funcs", [&](const Function& func, optional<string_view>) {
+    loadFunctionsWithCallback(M, "lock-check-funcs", [&](const Function& func, optional<string_view>) {
         auto argument = func.getArg(0);
         FieldSourceSet fields;
         set<const Value*> trackedSet;
 
         for (const auto& user: argument->users())
-            findFields(*func.getParent(), user, fields, trackedSet, false);
+            findFields(M, user, fields, trackedSet, false);
 
         if (fields.size() != 1) {
             if (fields.empty()) {
@@ -765,14 +768,14 @@ void LockCheckerPass::loadTransformers(const vector<Function *> &functions) {
     }, false);
 }
 
-void LockCheckerPass::loadSimpleFunctionLists(const vector<Function *> &functions) {
-    loadFunctionsWithCallback(functions, "alloc-funcs", [&](const Function& func, optional<string_view>) {
+void LockCheckerPass::loadSimpleFunctionLists(const Module& M) {
+    loadFunctionsWithCallback(M, "alloc-funcs", [&](const Function& func, optional<string_view>) {
         allocFunctions.insert(&func);
     }, true);
-    loadFunctionsWithCallback(functions, "free-funcs", [&](const Function& func, optional<string_view>) {
+    loadFunctionsWithCallback(M, "free-funcs", [&](const Function& func, optional<string_view>) {
         freeFunctions.insert(&func);
     }, false);
-    loadFunctionsWithCallback(functions, "lock-assert-funcs", [&](const Function& func, optional<string_view>) {
+    loadFunctionsWithCallback(M, "lock-assert-funcs", [&](const Function& func, optional<string_view>) {
         lockAssertFunctions.insert(&func);
     }, false);
 
@@ -957,11 +960,11 @@ void LockCheckerPass::taintStore(const Function* function) {
     }
 }
 
-void LockCheckerPass::run(const vector<Function *> &functions) {
+bool LockCheckerPass::doModulePass(Module* M) {
     LOG(LOG_INFO, "Finding lock wrappers\n");
     findWrappers();
     LOG(LOG_INFO, "Finding lock fields\n");
-    findLockAndUnLockFields(functions);
+    findLockAndUnLockFields(M);
     LOG(LOG_INFO, "Running allocation taint analysis\n");
     taintAnalyseAllocFunctions();
     LOG(LOG_INFO, "Running free taint analysis\n");
@@ -1004,5 +1007,6 @@ void LockCheckerPass::run(const vector<Function *> &functions) {
     }
 #endif
 
-    findViolations(functions);
+    findViolations(M);
+    return false;
 }

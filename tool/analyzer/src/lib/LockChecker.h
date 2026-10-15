@@ -21,19 +21,19 @@ struct StoreTaintData {
     bool cyclic : 1 {false};
 };
 
-class LockCheckerPass final {
+class LockCheckerPass : public IterativeModulePass {
 	public:
 		explicit LockCheckerPass(GlobalContext *Ctx_)
-			: Ctx(Ctx_),
+			: IterativeModulePass(Ctx_, "LockChecker"),
 			  DFA(Ctx_) {
 			}
         ~LockCheckerPass() {
         }
-		void doInitialization(const vector<Function *> &functions);
-		void run(const vector<Function *> &functions);
+		bool doInitialization(llvm::Module *) override;
+		bool doFinalization(llvm::Module *) override;
+		bool doModulePass(llvm::Module *) override;
 
 	private:
-		GlobalContext *Ctx;
 		DataFlowAnalysis DFA;
 
 		set<const Function*> allocFunctions, freeFunctions, lockAssertFunctions;
@@ -44,12 +44,12 @@ class LockCheckerPass final {
 		map<shared_ptr<Field>, FieldData, FieldSharedPtrCompare> LockFields, UnLockFields;
         unordered_set<const Type*> lockTypes;
 
-		void findBasicBlockCoverage(const vector<Function *> &functions, LockCoverageMap& lockCoverage);
-		void findViolations(const vector<Function *> &functions);
-		void loadTransformers(const vector<Function *> &functions);
-		void loadSimpleFunctionLists(const vector<Function *> &functions);
+		void findBasicBlockCoverage(Module* M, LockCoverageMap& lockCoverage);
+		void findViolations(Module* M);
+		void loadTransformers(const Module& M);
+		void loadSimpleFunctionLists(const Module& M);
 		void findWrappers();
-		void findLockAndUnLockFields(const vector<Function *> &functions);
+		void findLockAndUnLockFields(Module* M);
 		void handleFunctionForLockAndUnLockFields(Function& function);
 		bool isFunctionALocker(const Function& function) const;
 		bool isFunctionAnUnLocker(const Function& function) const;

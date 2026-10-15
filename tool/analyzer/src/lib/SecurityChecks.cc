@@ -76,7 +76,7 @@ bool SecurityChecksPass::isValueErrno(Value *V, Function *F) {
     }
 
 #ifdef ERROR_NULL_PTR
-    if (isa<ConstantPointerNull>(V)) {
+    if (ConstantPointerNull *CPN = dyn_cast<ConstantPointerNull>(V)) {
         if (F->getReturnType()->isPointerTy())
             return true;
     }

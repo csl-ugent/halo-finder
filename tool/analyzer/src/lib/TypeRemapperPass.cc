@@ -1,10 +1,7 @@
 #include "TypeRemapperPass.h"
 
-DenseMap<const LLVMContext *, const DataLayout *> ctxToLayout;
 
 void TypeRemapper::build(const Module& M) {
-    ctxToLayout[&M.getContext()] = &M.getDataLayout();
-
     auto structTypeList = M.getIdentifiedStructTypes();
     unordered_map<string_view, const Type*> baseLookup;
     for (const auto type: structTypeList) {
@@ -63,6 +60,7 @@ const Type* TypeRemapper::mapType(const Type* type) const {
 }
 
 bool TypeRemapperPass::doInitialization(Module* M) {
+    CurrentLayout = &M->getDataLayout();
     return false;
 }
 

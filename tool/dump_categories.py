@@ -2,6 +2,7 @@
 
 import sys
 import re
+import os
 from collections import defaultdict, Counter
 
 
@@ -15,7 +16,10 @@ categories = dict()
 probable_set_complement = set()
 
 
-with open('bug-studies/categorisatie', 'r') as file:
+script_dir = os.path.dirname(__file__)
+
+
+with open(os.path.join(script_dir, 'bug-studies/categorisatie'), 'r') as file:
     for line in file:
         data_array = re.split('\t+', line.rstrip('\n'))
         if len(data_array) != 2:

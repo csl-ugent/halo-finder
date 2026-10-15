@@ -1,0 +1,12 @@
+diff --git a/drivers/net/wwan/t7xx/Makefile b/drivers/net/wwan/t7xx/Makefile
+index dc6a7d682c15..7a7707717624 100644
+--- a/drivers/net/wwan/t7xx/Makefile
++++ b/drivers/net/wwan/t7xx/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+-ccflags-y += -Werror
++#ccflags-y += -Werror
+ 
+ obj-${CONFIG_MTK_T7XX} := mtk_t7xx.o
+ mtk_t7xx-y:=	t7xx_pci.o \

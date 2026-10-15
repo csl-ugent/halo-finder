@@ -271,8 +271,7 @@ struct LockCoverEqual {
 };
 
 
-using LockCovers = unordered_map<LockCover, unsigned int, LockCoverHash, LockCoverEqual>;
-using LockCoverageMap = unordered_map<const BasicBlock*, LockCovers>;
+using LockCoverageMap = unordered_map<const BasicBlock*, unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>>;
 using FieldSourceSet = unordered_set<FieldWithMaybeCompareType, FieldWithMaybeCompareTypeHash>;
 
 
@@ -282,7 +281,7 @@ using ViolationPathMap = unordered_map<shared_ptr<Field>, ViolationPaths, FieldS
 struct FieldCoverageData {
     ViolationPaths paths;
     set<const Value*> notLockedCounter;
-    LockCovers lockCovers;
+    unordered_multiset<LockCover, LockCoverHash, LockCoverEqual> lockCovers;
 };
 
 using FieldCoverageDataMap = unordered_map<shared_ptr<Field>, FieldCoverageData, FieldSharedPtrHash, FieldSharedPtrEqual>;

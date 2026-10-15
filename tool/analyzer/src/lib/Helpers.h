@@ -57,14 +57,14 @@ enum class AllowPrefix {
 bool isCompositeType(const Type* type);
 bool isFreeCallAlwaysExecutedRegardlessOfNullChecks(Function& containingFunction, const CallInst* call, Lazy<PostDominatorTree>& postDominatorTree);
 bool canBeUsedInAnIndirectCall(const Function& function);
-pair<const LockCover*, unsigned int> getMaxLockCoverCoveredCount(const LockCovers& lockCovers);
+pair<const LockCover*, unsigned int> getMaxLockCoverCoveredCount(const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>& lockCovers);
 bool isWrappingType(const Type* type);
 bool canCoverField(const Field& cover, const Field& field);
 void chainFields(Field& field, optional<shared_ptr<Field>> chainField);
 void chainFields(shared_ptr<Field>& field, optional<shared_ptr<Field>> chainField);
 void findFields(const Module& module, const Value *V, FieldSourceSet& sourceSet, set<const Value *>& TrackedSet, bool chunkAllOfThem);
-bool containsLockCover(const LockCovers& coverSet, const LockCover& necessaryCover, AllowPrefix allowPrefix=AllowPrefix::No);
-bool isCoveredByTheNecessaryLockCovers(const LockCovers& fieldToLockMapEntry, const LockCoverageMap& lockCoverage, const BasicBlock* BB);
+bool containsLockCover(const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>& coverSet, const LockCover& necessaryCover, AllowPrefix allowPrefix=AllowPrefix::No);
+bool isCoveredByTheNecessaryLockCovers(const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>& fieldToLockMapEntry, const LockCoverageMap& lockCoverage, const BasicBlock* BB);
 bool isFieldCoveredByTheNecessaryLockCovers(const shared_ptr<Field>& field, const LockCoverageMap& lockCoverage, const FieldCoverageDataMap& fieldCoverageData, const BasicBlock* BB);
 bool isThereALockCoverAlike(const shared_ptr<Field>& field, const LockCoverageMap& lockCoverage, const FieldCoverageDataMap& fieldCoverageData, const BasicBlock* BB);
 void getPotentialFieldOperandPointersFromInstruction(const Instruction& instruction, SmallVector<const Value*, 1>& foundOperands, bool ignoreVolatile);

@@ -174,5 +174,19 @@ bool PointerAnalysisPass::doModulePass(Module *M) {
 
     threadPool.wait();
 
+#if 0
+    for (const auto& [value, aliases] : Ctx->FuncPAResults[M->getFunction("reada_find_zone")]) {
+        LOG(LOG_INFO, "Value: ");
+        value->dump();
+        LOG(LOG_INFO, "Aliases: ");
+        for (const auto& alias : aliases) {
+            LOG(LOG_INFO, "\t");
+            alias->dump();
+        }
+    }
+
+    exit(1);
+#endif
+    
 	return false;
 }

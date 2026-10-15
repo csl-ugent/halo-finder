@@ -1,0 +1,13 @@
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index eb0466236661..4a7107542627 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -285,7 +285,7 @@ struct ftrace_likely_data {
+ #endif
+ 
+ #ifndef asm_volatile_goto
+-#define asm_volatile_goto(x...) asm goto(x)
++#define asm_volatile_goto(x...)
+ #endif
+ 
+ #ifdef CONFIG_CC_HAS_ASM_INLINE

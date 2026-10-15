@@ -1,0 +1,13 @@
+diff --git a/lib/Makefile b/lib/Makefile
+index 59bd7c2f793a..db54c7a1820b 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -59,7 +59,7 @@ obj-$(CONFIG_FIND_BIT_BENCHMARK) += find_bit_benchmark.o
+ obj-$(CONFIG_TEST_BPF) += test_bpf.o
+ obj-$(CONFIG_TEST_FIRMWARE) += test_firmware.o
+ obj-$(CONFIG_TEST_BITOPS) += test_bitops.o
+-CFLAGS_test_bitops.o += -Werror
++#CFLAGS_test_bitops.o += -Werror
+ obj-$(CONFIG_CPUMASK_KUNIT_TEST) += cpumask_kunit.o
+ obj-$(CONFIG_TEST_SYSCTL) += test_sysctl.o
+ obj-$(CONFIG_TEST_SIPHASH) += test_siphash.o

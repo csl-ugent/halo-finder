@@ -27,6 +27,7 @@ using namespace std;
 #define OP llvm::errs()
 
 extern cl::opt<int> VerboseLevel;
+extern const DataLayout *CurrentLayout;
 
 //
 // Common functions
@@ -38,8 +39,6 @@ string getFileName(DILocation *Loc,
 StringRef getCalledFuncName(Instruction *I);
 
 size_t funcHash(const Function *F, bool withName = true);
-
-size_t funcHash(const Function* F, StringRef name);
 
 size_t funcUnificationHash(const Function* F);
 

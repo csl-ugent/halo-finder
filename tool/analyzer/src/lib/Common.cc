@@ -5,8 +5,6 @@
 #include "Common.h"
 #include <regex>
 
-extern DenseMap<const LLVMContext *, const DataLayout *> ctxToLayout;
-
 bool trimPathSlash(string& path, int slash) {
     while (slash > 0) {
         path = path.substr(path.find('/') + 1);
@@ -93,18 +91,14 @@ size_t funcUnificationHash(const Function* F) {
     return str_hash(cleanup(rso.str()));
 }
 
-size_t funcHash(const Function* F, StringRef name) {
-	string output = signatureString(F->getFunctionType());
-	if (!name.empty()) {
-		output += name;
-	}
-	output = cleanup(output);
-	hash<string> str_hash;
-	return str_hash(output);
-}
-
 size_t funcHash(const Function* F, bool withName) {
-	return funcHash(F, withName ? F->getName() : StringRef {});
+    string output = signatureString(F->getFunctionType());
+    if (withName) {
+        output += F->getName();
+    }
+    output = cleanup(output);
+    hash<string> str_hash;
+    return str_hash(output);
 }
 
 size_t callHash(CallInst* CI) {
@@ -130,19 +124,19 @@ static void addTypeClass(string& output, Type* type) {
         addTypeClass(output, pointerType->getPointerElementType());
         output += ",";
     } else if (type->isIntegerTy())
-        output += to_string(ctxToLayout.find(&type->getContext())->second->getTypeSizeInBits(type)) + "I,";
+        output += to_string(CurrentLayout->getTypeSizeInBits(type)) + "I,";
     else if (type->isFunctionTy()) {
         auto functionType = dyn_cast<FunctionType>(type);
         output += to_string(functionType->getNumParams()) + "F,";
     } else if (type->isSized())
-        output += to_string(ctxToLayout.find(&type->getContext())->second->getTypeSizeInBits(type)) + ",";
+        output += to_string(CurrentLayout->getTypeSizeInBits(type)) + ",";
     else
         output += "U,";
 }
 
 string expand_struct(const StructType* STy) {
     // TODO: Handle opaque structures hashing better
-    auto typeSize = STy->isOpaque() ? 0 : ctxToLayout.find(&STy->getContext())->second->getStructLayout(const_cast<StructType*>(STy))->getSizeInBits();
+    auto typeSize = STy->isOpaque() ? 0 : CurrentLayout->getStructLayout(const_cast<StructType*>(STy))->getSizeInBits();
     auto numElements = STy->getNumElements();
     auto str = to_string(typeSize) + "," + to_string(numElements);
     for (unsigned int i = 0; i < numElements; ++i) {

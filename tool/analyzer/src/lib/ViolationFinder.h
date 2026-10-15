@@ -22,19 +22,19 @@ public:
 
     ~ViolationFinder() = default;
 
-    void findViolations(const vector<Function *> &functions);
+    void findViolations(const Module& M);
 
     void showLockingRules() const;
 
     void showFieldBugs() const;
 
-    void showAssertionBugs(const vector<Function *> &functions) const;
+    void showAssertionBugs(const Module& M) const;
 
-    void calculateInitializationValues(const vector<Function *> &functions);
+    void calculateInitializationValues(const Module& M);
 
-    void fillFunctionToSyscallMap(const vector<Function *> &functions);
+    void fillFunctionToSyscallMap(const Module& M);
 
-    void dumpStoreAndCallsTest(const vector<Function *> &functions) const;
+    void dumpStoreAndCallsTest(const Module& M) const;
 
     void deriveContexts();
 
@@ -66,7 +66,7 @@ private:
 
     void showFieldBugsIndividual(mutex* outputMutex, unsigned long uncoveredCount,
                                  const shared_ptr<Field>& field,
-                                 const LockCovers* lockCovers) const;
+                                 const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>* lockCovers) const;
 
     template<typename T, typename C>
     bool interproceduralFieldCoverCheck(const shared_ptr<Field>& field, const LockCoverageMap& lockCoverage,
@@ -83,7 +83,7 @@ private:
 
     void accountCriticalSourcesLockUnlockCounts(const vector<ValueWithIndirections>& cvSet, const shared_ptr<Field>& field, bool unlocked, const Value* startOperand, const shared_ptr<Field>& lockField);
 
-    void findPotentialRules(const vector<Function *> &function);
+    void findPotentialRules(const Module& M);
 
     void findPotentialRulesIndividual(const Function* function, ReadWriteViolationCoverToInstructionsMap* readWriteViolationCoverToInstructions, mutex* readWriteViolationCoverToInstructionsMutex, mutex* privateVarMutex);
 
@@ -91,7 +91,7 @@ private:
 
     optional<float> earlyRejectField(unsigned long uncoveredCount,
                           const shared_ptr<Field>& field,
-                          const LockCovers* lockCovers) const;
+                          const unordered_multiset<LockCover, LockCoverHash, LockCoverEqual>* lockCovers) const;
 
     unordered_map<shared_ptr<Field>, unordered_set<shared_ptr<Field>, FieldSharedPtrHash, FieldSharedPtrEqual>, FieldSharedPtrHash, FieldSharedPtrEqual> fieldLockPreference;
     map<const Function*, unsigned short> sinkFunctionCallLockedCount;

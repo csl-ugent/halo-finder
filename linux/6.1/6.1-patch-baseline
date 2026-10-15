@@ -1,0 +1,35 @@
+diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
+index c9be1657f03d..97390022d317 100644
+--- a/include/linux/bitfield.h
++++ b/include/linux/bitfield.h
+@@ -136,7 +136,7 @@ __bad_mask(void);
+ static __always_inline u64 field_multiplier(u64 field)
+ {
+ 	if ((field | (field - 1)) & ((field | (field - 1)) + 1))
+-		__bad_mask();
++		{}
+ 	return field & -field;
+ }
+ static __always_inline u64 field_mask(u64 field)
+@@ -148,7 +148,7 @@ static __always_inline u64 field_mask(u64 field)
+ static __always_inline __##type type##_encode_bits(base v, base field)	\
+ {									\
+ 	if (__builtin_constant_p(v) && (v & ~field_mask(field)))	\
+-		__field_overflow();					\
++		{}					\
+ 	return to((v & field_mask(field)) * field_multiplier(field));	\
+ }									\
+ static __always_inline __##type type##_replace_bits(__##type old,	\
+diff --git a/include/linux/build_bug.h b/include/linux/build_bug.h
+index e3a0be2c90ad..354d5d8ce01a 100644
+--- a/include/linux/build_bug.h
++++ b/include/linux/build_bug.h
+@@ -36,7 +36,7 @@
+  *
+  * See BUILD_BUG_ON for description.
+  */
+-#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
++#define BUILD_BUG_ON_MSG(cond, msg)
+ 
+ /**
+  * BUILD_BUG_ON - break compile if a condition is true.

@@ -544,35 +544,28 @@ findFields(const Module &module, const Value *V, FieldSourceSet &sourceSet, set<
                 if (debug) {
                     LOG(LOG_INFO, "newSize == oldSize\n");
                 }
-                if (Bitcast->getSrcTy()->isPointerTy()) {
-                    const Type* pointee = Bitcast->getSrcTy()->getPointerElementType();
-
-                    if (pointee->isIntegerTy()) {
-                        for (const auto* user : Bitcast->getOperand(0)->users()) {
-                            if (user == Bitcast)
-                                continue;
-                            if (auto cast = dyn_cast_or_null<BitCastInst>(user)) {
-                                if (cast->getDestTy()->isPointerTy() &&
-                                    cast->getDestTy()->getPointerElementType()->isStructTy()) {
-                                    pointee = cast->getDestTy()->getPointerElementType();
-                                    break;
-                                }
+		if (Bitcast->getSrcTy()->isPointerTy()) {
+                const Type* pointee = Bitcast->getSrcTy()->getPointerElementType();
+                if (pointee->isIntegerTy()) {
+                    for (const auto* user : Bitcast->getOperand(0)->users()) {
+                        if (user == Bitcast)
+                            continue;
+                        if (auto cast = dyn_cast_or_null<BitCastInst>(user)) {
+                            if (cast->getDestTy()->isPointerTy() && cast->getDestTy()->getPointerElementType()->isStructTy()) {
+                                pointee = cast->getDestTy()->getPointerElementType();
+                                break;
                             }
                         }
                     }
-
-                    if (pointee->isStructTy()) {
-                        pointee = GlobalCtx.typeRemapper.mapType(pointee);
-                        maybeRegisterFieldName(*Bitcast, V->getType(), pointee, 0);
-                        Field candidate(pointee, 0);
-                        if (debug) candidate.dump(LOG_INFO);
-                        sourceSet.insert(std::move(candidate));
-                    }
-                } else {
-                    if (debug) {
-                        LOG(LOG_INFO, "Bitcast source is not a pointer\n");
-                    }
                 }
+                if (pointee->isStructTy()) {
+                    pointee = GlobalCtx.typeRemapper.mapType(pointee);
+                    maybeRegisterFieldName(*Bitcast, V->getType(), pointee, 0);
+                    Field candidate(pointee, 0);
+                    if (debug) candidate.dump(LOG_INFO);
+                    sourceSet.insert(move(candidate));
+                }
+		}
             }
         } else if (auto Call = dyn_cast<CallInst>(V)) {
             if (auto callee = Call->getCalledFunction()) {
@@ -600,14 +593,14 @@ findFields(const Module &module, const Value *V, FieldSourceSet &sourceSet, set<
     }
 }
 
-static bool checkContainsPrefix(const LockCovers &coverSet,
+static bool checkContainsPrefix(const unordered_multiset <LockCover, LockCoverHash, LockCoverEqual> &coverSet,
                                 const LockCover &copyNecessaryCover) {
-    return any_of(coverSet, [&copyNecessaryCover](const auto &cover) {
-        return copyNecessaryCover.field->isPrefixOf(*cover.first.field);
+    return any_of(coverSet, [&copyNecessaryCover](const LockCover &cover) {
+        return copyNecessaryCover.field->isPrefixOf(*cover.field);
     });
 }
 
-bool containsLockCover(const LockCovers &coverSet,
+bool containsLockCover(const unordered_multiset <LockCover, LockCoverHash, LockCoverEqual> &coverSet,
                        const LockCover &necessaryCover, AllowPrefix allowPrefix) {
     LockCover copyNecessaryCover = necessaryCover; // Trivial copy
 
@@ -624,7 +617,7 @@ bool containsLockCover(const LockCovers &coverSet,
 }
 
 bool isCoveredByTheNecessaryLockCovers(
-        const LockCovers &fieldToLockMapEntry,
+        const unordered_multiset <LockCover, LockCoverHash, LockCoverEqual> &fieldToLockMapEntry,
         const LockCoverageMap &lockCoverage, const BasicBlock *BB) {
     auto coverageIt = lockCoverage.find(BB);
     if (coverageIt == lockCoverage.end()) // No locks are covered in this BB

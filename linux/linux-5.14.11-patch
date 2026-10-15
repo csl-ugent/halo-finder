@@ -1,0 +1,226 @@
+diff -ur linux-5.14.11/arch/x86/include/asm/cpufeature.h linux2/arch/x86/include/asm/cpufeature.h
+--- linux-5.14.11/arch/x86/include/asm/cpufeature.h	2021-10-09 15:02:42.000000000 +0200
++++ linux2/arch/x86/include/asm/cpufeature.h	2021-11-10 20:47:05.564552503 +0100
+@@ -152,16 +152,16 @@
+ 
+ #define setup_force_cpu_bug(bit) setup_force_cpu_cap(bit)
+ 
+-#if defined(__clang__) && !defined(CONFIG_CC_HAS_ASM_GOTO)
++#if 1 //defined(__clang__) && !defined(CONFIG_CC_HAS_ASM_GOTO)
+ 
+ /*
+  * Workaround for the sake of BPF compilation which utilizes kernel
+  * headers, but clang does not support ASM GOTO and fails the build.
+  */
+-#ifndef __BPF_TRACING__
++/*#ifndef __BPF_TRACING__
+ #warning "Compiler lacks ASM_GOTO support. Add -D __BPF_TRACING__ to your compiler arguments"
+ #endif
+-
++*/
+ #define static_cpu_has(bit)            boot_cpu_has(bit)
+ 
+ #else
+diff -ur linux-5.14.11/include/linux/compiler_types.h linux2/include/linux/compiler_types.h
+--- linux-5.14.11/include/linux/compiler_types.h	2021-10-09 15:02:42.000000000 +0200
++++ linux2/include/linux/compiler_types.h	2021-11-10 21:05:37.538436962 +0100
+@@ -301,16 +301,16 @@
+ # define __compiletime_error(message)
+ #endif
+ 
+-#ifdef __OPTIMIZE__
++/*#ifdef __OPTIMIZE__
+ # define __compiletime_assert(condition, msg, prefix, suffix)		\
+ 	do {								\
+ 		extern void prefix ## suffix(void) __compiletime_error(msg); \
+ 		if (!(condition))					\
+ 			prefix ## suffix();				\
+ 	} while (0)
+-#else
++#else*/
+ # define __compiletime_assert(condition, msg, prefix, suffix) do { } while (0)
+-#endif
++/*#endif*/
+ 
+ #define _compiletime_assert(condition, msg, prefix, suffix) \
+ 	__compiletime_assert(condition, msg, prefix, suffix)
+diff -ur linux-5.14.11/include/uapi/asm-generic/errno-base.h linux2/include/uapi/asm-generic/errno-base.h
+--- linux-5.14.11/include/uapi/asm-generic/errno-base.h	2021-10-09 15:02:42.000000000 +0200
++++ linux2/include/uapi/asm-generic/errno-base.h	2021-11-06 22:53:49.675844163 +0100
+@@ -2,39 +2,43 @@
+ #ifndef _ASM_GENERIC_ERRNO_BASE_H
+ #define _ASM_GENERIC_ERRNO_BASE_H
+ 
+-#define	EPERM		 1	/* Operation not permitted */
+-#define	ENOENT		 2	/* No such file or directory */
+-#define	ESRCH		 3	/* No such process */
+-#define	EINTR		 4	/* Interrupted system call */
+-#define	EIO		 5	/* I/O error */
+-#define	ENXIO		 6	/* No such device or address */
+-#define	E2BIG		 7	/* Argument list too long */
+-#define	ENOEXEC		 8	/* Exec format error */
+-#define	EBADF		 9	/* Bad file number */
+-#define	ECHILD		10	/* No child processes */
+-#define	EAGAIN		11	/* Try again */
+-#define	ENOMEM		12	/* Out of memory */
+-#define	EACCES		13	/* Permission denied */
+-#define	EFAULT		14	/* Bad address */
+-#define	ENOTBLK		15	/* Block device required */
+-#define	EBUSY		16	/* Device or resource busy */
+-#define	EEXIST		17	/* File exists */
+-#define	EXDEV		18	/* Cross-device link */
+-#define	ENODEV		19	/* No such device */
+-#define	ENOTDIR		20	/* Not a directory */
+-#define	EISDIR		21	/* Is a directory */
+-#define	EINVAL		22	/* Invalid argument */
+-#define	ENFILE		23	/* File table overflow */
+-#define	EMFILE		24	/* Too many open files */
+-#define	ENOTTY		25	/* Not a typewriter */
+-#define	ETXTBSY		26	/* Text file busy */
+-#define	EFBIG		27	/* File too large */
+-#define	ENOSPC		28	/* No space left on device */
+-#define	ESPIPE		29	/* Illegal seek */
+-#define	EROFS		30	/* Read-only file system */
+-#define	EMLINK		31	/* Too many links */
+-#define	EPIPE		32	/* Broken pipe */
+-#define	EDOM		33	/* Math argument out of domain of func */
+-#define	ERANGE		34	/* Math result not representable */
++#define CRIX_ERRNO_MASK   0xfffff000
++#define CRIX_ERRNO_PREFIX 0x4cedb000
++
++#define EPERM           (CRIX_ERRNO_PREFIX| 1)      /* Operation not permitted */
++#define ENOENT          (CRIX_ERRNO_PREFIX| 2)      /* No such file or directory */
++#define ESRCH           (CRIX_ERRNO_PREFIX| 3)      /* No such process */
++#define EINTR           (CRIX_ERRNO_PREFIX| 4)      /* Interrupted system call */
++#define EIO             (CRIX_ERRNO_PREFIX| 5)      /* I/O error */
++#define ENXIO           (CRIX_ERRNO_PREFIX| 6)      /* No such device or address */
++#define E2BIG           (CRIX_ERRNO_PREFIX| 7)      /* Argument list too long */
++#define ENOEXEC         (CRIX_ERRNO_PREFIX| 8)      /* Exec format error */
++#define EBADF           (CRIX_ERRNO_PREFIX| 9)      /* Bad file number */
++#define ECHILD          (CRIX_ERRNO_PREFIX|10)      /* No child processes */
++#define EAGAIN          (CRIX_ERRNO_PREFIX|11)      /* Try again */
++#define ENOMEM          (CRIX_ERRNO_PREFIX|12)      /* Out of memory */
++#define EACCES          (CRIX_ERRNO_PREFIX|13)      /* Permission denied */
++#define EFAULT          (CRIX_ERRNO_PREFIX|14)      /* Bad address */
++#define ENOTBLK         (CRIX_ERRNO_PREFIX|15)      /* Block device required */
++#define EBUSY           (CRIX_ERRNO_PREFIX|16)      /* Device or resource busy */
++#define EEXIST          (CRIX_ERRNO_PREFIX|17)      /* File exists */
++#define EXDEV           (CRIX_ERRNO_PREFIX|18)      /* Cross-device link */
++#define ENODEV          (CRIX_ERRNO_PREFIX|19)      /* No such device */
++#define ENOTDIR         (CRIX_ERRNO_PREFIX|20)      /* Not a directory */
++#define EISDIR          (CRIX_ERRNO_PREFIX|21)      /* Is a directory */
++#define EINVAL          (CRIX_ERRNO_PREFIX|22)      /* Invalid argument */
++#define ENFILE          (CRIX_ERRNO_PREFIX|23)      /* File table overflow */
++#define EMFILE          (CRIX_ERRNO_PREFIX|24)      /* Too many open files */
++#define ENOTTY          (CRIX_ERRNO_PREFIX|25)      /* Not a typewriter */
++#define ETXTBSY         (CRIX_ERRNO_PREFIX|26)      /* Text file busy */
++#define EFBIG           (CRIX_ERRNO_PREFIX|27)      /* File too large */
++#define ENOSPC          (CRIX_ERRNO_PREFIX|28)      /* No space left on device */
++#define ESPIPE          (CRIX_ERRNO_PREFIX|29)      /* Illegal seek */
++#define EROFS           (CRIX_ERRNO_PREFIX|30)      /* Read-only file system */
++#define EMLINK          (CRIX_ERRNO_PREFIX|31)      /* Too many links */
++#define EPIPE           (CRIX_ERRNO_PREFIX|32)      /* Broken pipe */
++#define EDOM            (CRIX_ERRNO_PREFIX|33)      /* Math argument out of domain of func */
++#define ERANGE          (CRIX_ERRNO_PREFIX|34)      /* Math result not representable */
+ 
+ #endif
++
+diff -ur linux-5.14.11/lib/errname.c linux2/lib/errname.c
+--- linux-5.14.11/lib/errname.c	2021-10-09 15:02:42.000000000 +0200
++++ linux2/lib/errname.c	2021-11-06 23:07:36.009883108 +0100
+@@ -13,7 +13,7 @@
+  * on mips), so this wastes a bit of space on those - though we
+  * special case the EDQUOT case.
+  */
+-#define E(err) [err + BUILD_BUG_ON_ZERO(err <= 0 || err > 300)] = "-" #err
++#define E(err) [(err&~CRIX_ERRNO_MASK) + BUILD_BUG_ON_ZERO((err&~CRIX_ERRNO_MASK) <= 0 || (err&~CRIX_ERRNO_MASK) > 300)] = "-" #err
+ static const char *names_0[] = {
+ 	E(E2BIG),
+ 	E(EACCES),
+@@ -216,7 +216,7 @@
+  */
+ const char *errname(int err)
+ {
+-	const char *name = __errname(abs(err));
++	const char *name = __errname(abs(err&~CRIX_ERRNO_MASK));
+ 	if (!name)
+ 		return NULL;
+ 
+diff -ur linux-5.14.11/tools/include/uapi/asm-generic/errno-base.h linux2/tools/include/uapi/asm-generic/errno-base.h
+--- linux-5.14.11/tools/include/uapi/asm-generic/errno-base.h	2021-10-09 15:02:42.000000000 +0200
++++ linux2/tools/include/uapi/asm-generic/errno-base.h	2021-11-07 02:04:43.331658866 +0100
+@@ -2,39 +2,40 @@
+ #ifndef _ASM_GENERIC_ERRNO_BASE_H
+ #define _ASM_GENERIC_ERRNO_BASE_H
+ 
+-#define	EPERM		 1	/* Operation not permitted */
+-#define	ENOENT		 2	/* No such file or directory */
+-#define	ESRCH		 3	/* No such process */
+-#define	EINTR		 4	/* Interrupted system call */
+-#define	EIO		 5	/* I/O error */
+-#define	ENXIO		 6	/* No such device or address */
+-#define	E2BIG		 7	/* Argument list too long */
+-#define	ENOEXEC		 8	/* Exec format error */
+-#define	EBADF		 9	/* Bad file number */
+-#define	ECHILD		10	/* No child processes */
+-#define	EAGAIN		11	/* Try again */
+-#define	ENOMEM		12	/* Out of memory */
+-#define	EACCES		13	/* Permission denied */
+-#define	EFAULT		14	/* Bad address */
+-#define	ENOTBLK		15	/* Block device required */
+-#define	EBUSY		16	/* Device or resource busy */
+-#define	EEXIST		17	/* File exists */
+-#define	EXDEV		18	/* Cross-device link */
+-#define	ENODEV		19	/* No such device */
+-#define	ENOTDIR		20	/* Not a directory */
+-#define	EISDIR		21	/* Is a directory */
+-#define	EINVAL		22	/* Invalid argument */
+-#define	ENFILE		23	/* File table overflow */
+-#define	EMFILE		24	/* Too many open files */
+-#define	ENOTTY		25	/* Not a typewriter */
+-#define	ETXTBSY		26	/* Text file busy */
+-#define	EFBIG		27	/* File too large */
+-#define	ENOSPC		28	/* No space left on device */
+-#define	ESPIPE		29	/* Illegal seek */
+-#define	EROFS		30	/* Read-only file system */
+-#define	EMLINK		31	/* Too many links */
+-#define	EPIPE		32	/* Broken pipe */
+-#define	EDOM		33	/* Math argument out of domain of func */
+-#define	ERANGE		34	/* Math result not representable */
++#define EPERM           (0x4cedb000| 1)      /* Operation not permitted */
++#define ENOENT          (0x4cedb000| 2)      /* No such file or directory */
++#define ESRCH           (0x4cedb000| 3)      /* No such process */
++#define EINTR           (0x4cedb000| 4)      /* Interrupted system call */
++#define EIO             (0x4cedb000| 5)      /* I/O error */
++#define ENXIO           (0x4cedb000| 6)      /* No such device or address */
++#define E2BIG           (0x4cedb000| 7)      /* Argument list too long */
++#define ENOEXEC         (0x4cedb000| 8)      /* Exec format error */
++#define EBADF           (0x4cedb000| 9)      /* Bad file number */
++#define ECHILD          (0x4cedb000|10)      /* No child processes */
++#define EAGAIN          (0x4cedb000|11)      /* Try again */
++#define ENOMEM          (0x4cedb000|12)      /* Out of memory */
++#define EACCES          (0x4cedb000|13)      /* Permission denied */
++#define EFAULT          (0x4cedb000|14)      /* Bad address */
++#define ENOTBLK         (0x4cedb000|15)      /* Block device required */
++#define EBUSY           (0x4cedb000|16)      /* Device or resource busy */
++#define EEXIST          (0x4cedb000|17)      /* File exists */
++#define EXDEV           (0x4cedb000|18)      /* Cross-device link */
++#define ENODEV          (0x4cedb000|19)      /* No such device */
++#define ENOTDIR         (0x4cedb000|20)      /* Not a directory */
++#define EISDIR          (0x4cedb000|21)      /* Is a directory */
++#define EINVAL          (0x4cedb000|22)      /* Invalid argument */
++#define ENFILE          (0x4cedb000|23)      /* File table overflow */
++#define EMFILE          (0x4cedb000|24)      /* Too many open files */
++#define ENOTTY          (0x4cedb000|25)      /* Not a typewriter */
++#define ETXTBSY         (0x4cedb000|26)      /* Text file busy */
++#define EFBIG           (0x4cedb000|27)      /* File too large */
++#define ENOSPC          (0x4cedb000|28)      /* No space left on device */
++#define ESPIPE          (0x4cedb000|29)      /* Illegal seek */
++#define EROFS           (0x4cedb000|30)      /* Read-only file system */
++#define EMLINK          (0x4cedb000|31)      /* Too many links */
++#define EPIPE           (0x4cedb000|32)      /* Broken pipe */
++#define EDOM            (0x4cedb000|33)      /* Math argument out of domain of func */
++#define ERANGE          (0x4cedb000|34)      /* Math result not representable */
+ 
+ #endif
++
